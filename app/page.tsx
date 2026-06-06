@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 const apps = [
   {
     name: 'Steady',
@@ -5,7 +7,8 @@ const apps = [
     headline: 'A calmer way to stay consistent.',
     description:
       'Track injections, weight, doses, side effects, and progress in one thoughtful place designed to make health routines feel manageable.',
-    icon: '🌺',
+    iconSrc: '/apps/steady-icon.png',
+    iconAlt: 'Steady app icon',
     gradient: 'from-rose-100 via-white to-sky-100',
     accent: 'bg-rose-500',
   },
@@ -15,7 +18,8 @@ const apps = [
     headline: 'Forecasts that feel beautifully clear.',
     description:
       'A focused weather app built around the details that matter most: conditions, timing, confidence, and a design that gets out of the way.',
-    icon: '☀️',
+    iconSrc: '/apps/skylight-icon.png',
+    iconAlt: 'Skylight app icon',
     gradient: 'from-amber-100 via-white to-cyan-100',
     accent: 'bg-amber-400',
   },
@@ -133,8 +137,14 @@ export default function Home() {
                 <div className="absolute right-[-6rem] top-[-6rem] size-72 rounded-full bg-white/60 blur-3xl transition group-hover:scale-110" />
                 <div className="relative">
                   <div className="mb-20 flex items-center justify-between">
-                    <div className="grid size-16 place-items-center rounded-3xl bg-white/80 text-4xl shadow-sm backdrop-blur">
-                      {app.icon}
+                    <div className="overflow-hidden rounded-3xl bg-white/80 shadow-sm ring-1 ring-white/70 backdrop-blur">
+                      <Image
+                        src={app.iconSrc}
+                        alt={app.iconAlt}
+                        width={64}
+                        height={64}
+                        className="block size-16 object-cover"
+                      />
                     </div>
                     <span className="rounded-full border border-white/80 bg-white/65 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur">
                       {app.eyebrow}
