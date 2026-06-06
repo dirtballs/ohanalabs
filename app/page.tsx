@@ -1,37 +1,39 @@
-const apps = [
-  {
-    name: 'Steady',
-    eyebrow: 'GLP-1 tracking',
-    headline: 'A calmer way to stay consistent.',
-    description:
-      'Track injections, weight, doses, side effects, and progress in one thoughtful place designed to make health routines feel manageable.',
-    icon: '🌺',
-    gradient: 'from-rose-100 via-white to-sky-100',
-    accent: 'bg-rose-500',
-  },
-  {
-    name: 'Skylight',
-    eyebrow: 'Weather',
-    headline: 'Forecasts that feel beautifully clear.',
-    description:
-      'A focused weather app built around the details that matter most: conditions, timing, confidence, and a design that gets out of the way.',
-    icon: '☀️',
-    gradient: 'from-amber-100 via-white to-cyan-100',
-    accent: 'bg-amber-400',
-  },
-];
-
-const values = [
-  'Calm by default',
-  'Useful before flashy',
-  'Privacy-conscious',
-  'Designed for real life',
-];
-
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7fbff] text-slate-950">
-      {/* content unchanged except one line */}
+    <main className="min-h-screen bg-white text-slate-900">
+      <section className="mx-auto max-w-6xl px-8 py-24">
+        <div className="mb-12 flex items-center gap-3">
+          <div className="text-3xl">🌺</div>
+          <div className="text-xl font-semibold">Ohana Labs</div>
+        </div>
+
+        <h1 className="max-w-4xl text-6xl font-bold tracking-tight sm:text-8xl">
+          Apps that feel like family.
+        </h1>
+
+        <p className="mt-8 max-w-2xl text-xl text-slate-600">
+          Thoughtful software inspired by the spirit of Ohana. We build simple,
+          beautiful apps that help people live healthier, calmer, and more connected lives.
+        </p>
+
+        <div className="mt-16 grid gap-8 md:grid-cols-2">
+          <div className="rounded-3xl border p-8">
+            <div className="text-4xl mb-4">🌺</div>
+            <h2 className="text-3xl font-semibold">Steady</h2>
+            <p className="mt-4 text-slate-600">
+              GLP-1 tracking designed to make progress feel clear, calm, and personal.
+            </p>
+          </div>
+
+          <div className="rounded-3xl border p-8">
+            <div className="text-4xl mb-4">☀️</div>
+            <h2 className="text-3xl font-semibold">Skylight</h2>
+            <p className="mt-4 text-slate-600">
+              Weather presented with clarity, beauty, and just the details that matter.
+            </p>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
