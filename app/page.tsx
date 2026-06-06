@@ -7,13 +7,17 @@ export default function Home() {
           <div className="text-xl font-semibold">Ohana Labs</div>
         </div>
 
+        <p className="mb-6 text-2xl font-semibold tracking-tight text-slate-700 sm:text-4xl">
+          Built with aloha.
+        </p>
+
         <h1 className="max-w-4xl text-6xl font-bold tracking-tight sm:text-8xl">
           Apps that feel like family.
         </h1>
 
         <p className="mt-8 max-w-2xl text-xl text-slate-600">
           Thoughtful software inspired by the spirit of Ohana. We build simple,
-          beautiful apps that help people live healthier, calmer, and more connected lives.
+          beautiful apps for calmer, more connected everyday lives.
         </p>
 
         <div className="mt-16 grid gap-8 md:grid-cols-2">
@@ -21,7 +25,7 @@ export default function Home() {
             <div className="text-4xl mb-4">🌺</div>
             <h2 className="text-3xl font-semibold">Steady</h2>
             <p className="mt-4 text-slate-600">
-              GLP-1 tracking designed to make progress feel clear, calm, and personal.
+              A clear, calm way to track progress and stay consistent.
             </p>
           </div>
 
