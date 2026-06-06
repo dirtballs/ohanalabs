@@ -1,29 +1,6 @@
 import Image from 'next/image';
-
-const apps = [
-  {
-    name: 'Steady',
-    eyebrow: 'GLP-1 tracking',
-    headline: 'A calmer way to stay consistent.',
-    description:
-      'Track injections, weight, doses, side effects, and progress in one thoughtful place designed to make health routines feel manageable.',
-    iconSrc: '/apps/steady-icon.png',
-    iconAlt: 'Steady app icon',
-    gradient: 'from-rose-100 via-white to-sky-100',
-    accent: 'bg-rose-500',
-  },
-  {
-    name: 'Skylight',
-    eyebrow: 'Weather',
-    headline: 'Forecasts that feel beautifully clear.',
-    description:
-      'A focused weather app built around the details that matter most: conditions, timing, confidence, and a design that gets out of the way.',
-    iconSrc: '/apps/skylight-icon.png',
-    iconAlt: 'Skylight app icon',
-    gradient: 'from-amber-100 via-white to-cyan-100',
-    accent: 'bg-amber-400',
-  },
-];
+import Link from 'next/link';
+import { appList } from './apps/app-data';
 
 const values = [
   'Calm by default',
@@ -129,7 +106,7 @@ export default function Home() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            {apps.map((app) => (
+            {appList.map((app) => (
               <article
                 key={app.name}
                 className={`group relative overflow-hidden rounded-[2.5rem] border border-white bg-gradient-to-br ${app.gradient} p-8 shadow-2xl shadow-slate-950/[0.06] transition duration-300 hover:-translate-y-1 hover:shadow-sky-950/10 sm:p-10`}
@@ -147,15 +124,30 @@ export default function Home() {
                       />
                     </div>
                     <span className="rounded-full border border-white/80 bg-white/65 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur">
-                      {app.eyebrow}
+                      {app.category}
                     </span>
                   </div>
                   <h3 className="text-5xl font-semibold tracking-[-0.055em] sm:text-6xl">{app.name}</h3>
                   <p className="mt-4 text-2xl font-semibold tracking-[-0.035em] text-slate-800">{app.headline}</p>
-                  <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">{app.description}</p>
-                  <div className="mt-10 flex items-center gap-3 text-sm font-semibold text-slate-700">
+                  <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">{app.shortDescription}</p>
+                  <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-slate-700">
                     <span className={`h-2.5 w-2.5 rounded-full ${app.accent}`} />
-                    <span>Coming to the App Store under Ohana Labs LLC</span>
+                    <span>{app.availability}</span>
+                  </div>
+                  <p className="mt-3 text-sm font-medium text-slate-600">{app.priceLabel}</p>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a
+                      href={app.appStoreUrl}
+                      className="rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
+                    >
+                      Download on the App Store
+                    </a>
+                    <Link
+                      href={`/apps/${app.slug}`}
+                      className="rounded-full border border-slate-200 bg-white/80 px-5 py-3 text-center text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
+                    >
+                      View app details
+                    </Link>
                   </div>
                 </div>
               </article>
@@ -201,12 +193,20 @@ export default function Home() {
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
             Questions, support requests, ideas, and partnership notes can all start here.
           </p>
-          <a
-            href="mailto:support@ohanalabs.app"
-            className="mt-9 inline-flex rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
-          >
-            support@ohanalabs.app
-          </a>
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+            <a
+              href="mailto:support@ohanalabs.app"
+              className="inline-flex rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
+            >
+              support@ohanalabs.app
+            </a>
+            <Link
+              href="/apps/steady/support"
+              className="inline-flex rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50"
+            >
+              App support pages
+            </Link>
+          </div>
         </div>
       </section>
 
