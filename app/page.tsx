@@ -9,6 +9,16 @@ const values = [
   'Designed for real life',
 ];
 
+const ohanaKitchenTease = {
+  name: 'Ohana Kitchen',
+  category: 'Recipe app',
+  status: 'In development at Ohana Labs',
+  headline: 'A beautiful new recipe app for calmer cooking, better planning, and meals you will actually make.',
+  description:
+    'Ohana Kitchen is shaping up to be a warm, thoughtful home for recipes, meal planning, and everyday inspiration. Less chaos, more clarity around what to cook tonight.',
+  screenshotSrc: '/apps/ohana-kitchen/home-teaser.png',
+};
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#f7fbff] text-slate-950">
@@ -153,6 +163,57 @@ export default function Home() {
               </article>
             ))}
           </div>
+
+          <article className="relative mt-6 overflow-hidden rounded-[2.75rem] border border-white bg-[linear-gradient(135deg,#fff7ed,#ffffff_45%,#ecfccb)] p-8 shadow-2xl shadow-slate-950/[0.06] sm:p-10">
+            <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-amber-200/60 blur-3xl" />
+            <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-lime-200/50 blur-3xl" />
+            <div className="relative grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-center">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-amber-700">In development</p>
+                <div className="mt-5 flex items-center gap-3">
+                  <div className="grid size-16 place-items-center rounded-3xl bg-white/80 text-3xl shadow-sm ring-1 ring-white/70">
+                    🍳
+                  </div>
+                  <div>
+                    <h3 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl">
+                      {ohanaKitchenTease.name}
+                    </h3>
+                    <p className="mt-2 text-sm font-semibold text-slate-600">{ohanaKitchenTease.category}</p>
+                  </div>
+                </div>
+                <p className="mt-6 max-w-3xl text-2xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-3xl">
+                  {ohanaKitchenTease.headline}
+                </p>
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">{ohanaKitchenTease.description}</p>
+                <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/80 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur">
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                  <span>{ohanaKitchenTease.status}</span>
+                </div>
+              </div>
+
+              <div className="relative mx-auto w-full max-w-[24rem]">
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-amber-200/70 via-white to-lime-200/70 blur-2xl" />
+                <div className="relative overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/70 p-3 shadow-2xl shadow-slate-950/[0.10] backdrop-blur">
+                  <div className="relative overflow-hidden rounded-[1.8rem]">
+                    <Image
+                      src={ohanaKitchenTease.screenshotSrc}
+                      alt="Ohana Kitchen teaser screenshot"
+                      width={945}
+                      height={2048}
+                      className="h-auto w-full scale-[1.03] blur-[10px] saturate-[0.9]"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0.42))]" />
+                    <div className="absolute inset-x-5 bottom-5 rounded-[1.75rem] border border-white/80 bg-white/78 p-5 shadow-lg backdrop-blur">
+                      <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-700">Coming soon</p>
+                      <p className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+                        Recipes, planning, and a calmer kitchen rhythm.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
