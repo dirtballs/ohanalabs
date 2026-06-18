@@ -16,6 +16,7 @@ const ohanaKitchenTease = {
   headline: 'A beautiful new recipe app for calmer cooking, better planning, and meals you will actually make.',
   description:
     'Ohana Kitchen is shaping up to be a warm, thoughtful home for recipes, meal planning, and everyday inspiration. Less chaos, more clarity around what to cook tonight.',
+  iconSrc: '/apps/ohana-kitchen/icon.png',
   screenshotSrc: '/apps/ohana-kitchen/home-teaser.png',
 };
 
@@ -171,8 +172,14 @@ export default function Home() {
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.24em] text-amber-700">In development</p>
                 <div className="mt-5 flex items-center gap-3">
-                  <div className="grid size-16 place-items-center rounded-3xl bg-white/80 text-3xl shadow-sm ring-1 ring-white/70">
-                    🍳
+                  <div className="overflow-hidden rounded-3xl bg-white/80 shadow-sm ring-1 ring-white/70 backdrop-blur">
+                    <Image
+                      src={ohanaKitchenTease.iconSrc}
+                      alt="Ohana Kitchen app icon"
+                      width={64}
+                      height={64}
+                      className="block size-16 object-cover"
+                    />
                   </div>
                   <div>
                     <h3 className="text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl">
