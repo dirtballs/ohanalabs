@@ -3,14 +3,14 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Ohana Labs',
-  description: 'Thoughtful apps for healthier, clearer everyday life.',
+  description: 'Thoughtful apps for health, weather, listening, and kitchen life.',
   metadataBase: new URL('https://www.ohanalabs.app'),
   alternates: {
     canonical: 'https://www.ohanalabs.app',
   },
   openGraph: {
     title: 'Ohana Labs',
-    description: 'Thoughtful apps for healthier, clearer everyday life.',
+    description: 'Thoughtful apps for health, weather, listening, and kitchen life.',
     url: 'https://www.ohanalabs.app',
     siteName: 'Ohana Labs',
     type: 'website',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Ohana Labs',
-    description: 'Thoughtful apps for healthier, clearer everyday life.',
+    description: 'Thoughtful apps for health, weather, listening, and kitchen life.',
   },
 };
 

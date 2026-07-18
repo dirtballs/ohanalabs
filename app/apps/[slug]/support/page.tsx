@@ -61,13 +61,20 @@ export default async function SupportPage({ params }: PageProps) {
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Email</p>
               <p className="mt-2 text-lg font-semibold text-slate-900">support@ohanalabs.app</p>
             </a>
-            <a
-              href={app.appStoreUrl}
-              className="rounded-3xl bg-slate-50 p-6 transition hover:bg-slate-100"
-            >
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">App Store</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">Open {app.name} listing</p>
-            </a>
+            {app.appStoreUrl ? (
+              <a
+                href={app.appStoreUrl}
+                className="rounded-3xl bg-slate-50 p-6 transition hover:bg-slate-100"
+              >
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">App Store</p>
+                <p className="mt-2 text-lg font-semibold text-slate-900">Open {app.name} listing</p>
+              </a>
+            ) : (
+              <div className="rounded-3xl bg-slate-50 p-6">
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Release stage</p>
+                <p className="mt-2 text-lg font-semibold text-slate-900">{app.statusLabel}</p>
+              </div>
+            )}
           </div>
 
           <section className="mt-12">

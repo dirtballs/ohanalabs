@@ -52,7 +52,7 @@ export default async function AppPrivacyPage({ params }: PageProps) {
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
             This page explains the privacy approach for {app.name} and how to contact Ohana Labs LLC with privacy questions.
           </p>
-          <p className="mt-4 text-sm text-slate-500">Effective date: June 5, 2026</p>
+          <p className="mt-4 text-sm text-slate-500">Effective date: July 18, 2026</p>
 
           <div className="mt-12 space-y-8">
             {app.privacySections.map((section) => (

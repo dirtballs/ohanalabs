@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { appList, getAppBySlug } from '../app-data';
+import type { AppData } from '../app-data';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -29,6 +30,72 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function AppVisual({ app }: { app: AppData }) {
+  if (app.screenshotPaths.length > 0) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-2">
+        {app.screenshotPaths.map((path, index) => (
+          <div
+            key={path}
+            className="overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-lg shadow-slate-950/[0.06]"
+          >
+            <Image
+              src={path}
+              alt={`${app.name} screenshot ${index + 1}`}
+              width={300}
+              height={650}
+              className="h-auto w-full rounded-[1.5rem]"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (app.previewImageSrc) {
+    return (
+      <div className="relative mx-auto w-full max-w-[24rem]">
+        <div className="absolute -inset-4 rounded-[2.5rem] bg-white/70 blur-2xl" />
+        <div className="relative overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/70 p-3 shadow-2xl shadow-slate-950/[0.10] backdrop-blur">
+          <div className="overflow-hidden rounded-[1.8rem]">
+            <Image
+              src={app.previewImageSrc}
+              alt={app.previewImageAlt ?? `${app.name} preview`}
+              width={945}
+              height={2048}
+              className="h-auto w-full"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/78 p-8 shadow-2xl shadow-slate-950/[0.10] backdrop-blur">
+      <div className="absolute right-[-5rem] top-[-5rem] size-48 rounded-full bg-sky-100 blur-3xl" />
+      <div className="relative">
+        <div className="flex items-center gap-4">
+          <div className="overflow-hidden rounded-[1.75rem] bg-white shadow-lg ring-1 ring-white/80">
+            <Image src={app.iconSrc} alt={app.iconAlt} width={96} height={96} className="block size-24 object-cover" />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">{app.statusLabel}</p>
+            <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{app.name}</p>
+          </div>
+        </div>
+        <div className="mt-8 space-y-3">
+          {app.highlights.slice(0, 4).map((highlight) => (
+            <div key={highlight} className="rounded-2xl bg-slate-50 px-5 py-4 text-base leading-7 text-slate-700">
+              {highlight}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function AppDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const app = getAppBySlug(slug);
@@ -47,7 +114,9 @@ export default async function AppDetailPage({ params }: PageProps) {
           Back to home
         </Link>
 
-        <section className={`mt-8 overflow-hidden rounded-[2.75rem] border border-white bg-gradient-to-br ${app.gradient} p-8 shadow-2xl shadow-slate-950/[0.06] sm:p-12`}>
+        <section
+          className={`mt-8 overflow-hidden rounded-[2.75rem] border border-white bg-gradient-to-br ${app.gradient} p-8 shadow-2xl shadow-slate-950/[0.06] sm:p-12`}
+        >
           <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.24em] text-slate-700">{app.category}</p>
@@ -63,12 +132,14 @@ export default async function AppDetailPage({ params }: PageProps) {
               <p className="mt-8 max-w-3xl text-2xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-3xl">{app.headline}</p>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">{app.longDescription}</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={app.appStoreUrl}
-                  className="rounded-full bg-slate-950 px-6 py-3 text-center text-sm font-semibold text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
-                >
-                  {app.storeLabel}
-                </a>
+                {app.primaryLink ? (
+                  <a
+                    href={app.primaryLink.href}
+                    className="rounded-full bg-slate-950 px-6 py-3 text-center text-sm font-semibold text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
+                  >
+                    {app.primaryLink.label}
+                  </a>
+                ) : null}
                 <Link
                   href={`/apps/${app.slug}/support`}
                   className="rounded-full border border-slate-200 bg-white/85 px-6 py-3 text-center text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
@@ -78,29 +149,17 @@ export default async function AppDetailPage({ params }: PageProps) {
               </div>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-3xl bg-white/80 p-5 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Pricing</p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">{app.priceLabel}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Status</p>
+                  <p className="mt-2 text-base font-semibold text-slate-900">{app.statusLabel}</p>
                 </div>
                 <div className="rounded-3xl bg-white/80 p-5 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Best for</p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">{app.shortDescription}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Access</p>
+                  <p className="mt-2 text-base font-semibold text-slate-900">{app.priceLabel}</p>
                 </div>
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-2">
-              {app.screenshotPaths.map((path, index) => (
-                <div key={path} className="overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-lg shadow-slate-950/[0.06]">
-                  <Image
-                    src={path}
-                    alt={`${app.name} screenshot ${index + 1}`}
-                    width={300}
-                    height={650}
-                    className="h-auto w-full rounded-[1.5rem]"
-                  />
-                </div>
-              ))}
-            </div>
+            <AppVisual app={app} />
           </div>
         </section>
 
@@ -138,7 +197,9 @@ export default async function AppDetailPage({ params }: PageProps) {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-700">Need help?</p>
-              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-5xl">Support, privacy, and store links in one place.</h2>
+              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-5xl">
+                Support, privacy, and release details in one place.
+              </h2>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link

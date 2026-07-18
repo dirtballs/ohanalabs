@@ -7,13 +7,20 @@ export type AppData = {
   longDescription: string;
   iconSrc: string;
   iconAlt: string;
-  appStoreUrl: string;
-  storeLabel: string;
-  priceLabel: string;
+  releaseStage: 'app-store' | 'testflight';
   availability: string;
+  statusLabel: string;
+  priceLabel: string;
+  appStoreUrl?: string;
+  primaryLink?: {
+    label: string;
+    href: string;
+  };
   gradient: string;
   accent: string;
   screenshotPaths: string[];
+  previewImageSrc?: string;
+  previewImageAlt?: string;
   highlights: string[];
   featureSections: Array<{
     title: string;
@@ -38,13 +45,18 @@ export const appList: AppData[] = [
     shortDescription:
       'Track injections, weight, doses, side effects, meals, labs, and progress in one thoughtful place designed to make health routines feel manageable.',
     longDescription:
-      'Steady is built for people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications who want one clear system for staying consistent.',
+      'Steady helps people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications stay organized with reminders, trends, exports, and day-to-day health context.',
     iconSrc: '/apps/steady-icon.png',
     iconAlt: 'Steady app icon',
-    appStoreUrl: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
-    storeLabel: 'Download on the App Store',
+    releaseStage: 'app-store',
+    availability: 'Available now on the App Store for iPhone',
+    statusLabel: 'Live on the App Store',
     priceLabel: 'Free download with in-app purchases',
-    availability: 'Now on the App Store for iPhone',
+    appStoreUrl: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
+    primaryLink: {
+      label: 'Download on the App Store',
+      href: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
+    },
     gradient: 'from-rose-100 via-white to-sky-100',
     accent: 'bg-rose-500',
     screenshotPaths: [
@@ -55,8 +67,8 @@ export const appList: AppData[] = [
     highlights: [
       'Apple Health sync for weight, sleep, and wellness context',
       'AI food scan, macro logging, and protein tracking',
-      'PDF exports and a browser dashboard at steadydose.app',
-      'Lab tracking, reminders, and post-GLP-1 mode',
+      'PDF exports, visit prep, and a browser dashboard at steadydose.app',
+      'Lab tracking, refill reminders, and post-GLP-1 support',
     ],
     featureSections: [
       {
@@ -72,15 +84,15 @@ export const appList: AppData[] = [
         items: [
           'Track weight, milestones, body measurements, and non-scale victories',
           'Compare progress photos and follow trend charts over time',
-          'Monitor food noise, energy, and muscle-preservation habits',
+          'Monitor food noise, energy, protein, and muscle-preservation habits',
         ],
       },
       {
         title: 'Stay organized between visits',
         items: [
-          'Manage vials, refill timing, and titration history',
-          'Export clinician-ready PDFs for appointments',
-          'Review labs and keep your health story in one place',
+          'Manage vials, refill timing, titration history, and lab results',
+          'Export clinician-ready PDFs for appointments and check-ins',
+          'Keep your health story in one place instead of scattered notes',
         ],
       },
     ],
@@ -130,15 +142,20 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'See current conditions, hourly forecasts, alerts, radar, AQI, and smart weather guidance in a clean interface that stays out of the way.',
+      'See current conditions, hourly forecasts, radar, alerts, AQI, and smart weather guidance in a clean interface that stays out of the way.',
     longDescription:
-      'Skylight is a privacy-first weather app built for people who actually want to understand what is happening outside without ads, noise, or subscription games.',
+      'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
     iconAlt: 'Skylight app icon',
-    appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
-    storeLabel: 'Download on the App Store',
+    releaseStage: 'app-store',
+    availability: 'Available now on the App Store for iPhone',
+    statusLabel: 'Live on the App Store',
     priceLabel: '$2.99 one-time unlock for Skylight Pro',
-    availability: 'Now on the App Store for iPhone',
+    appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
+    primaryLink: {
+      label: 'Download on the App Store',
+      href: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
+    },
     gradient: 'from-amber-100 via-white to-cyan-100',
     accent: 'bg-amber-400',
     screenshotPaths: [
@@ -147,8 +164,8 @@ export const appList: AppData[] = [
       '/apps/skylight/screenshot-3.webp',
     ],
     highlights: [
-      'No ads, no account required, no tracking',
-      'Radar, AQI, rain timing, and smart outlook cards',
+      'No ads, no account required, and no tracking',
+      'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Pro purchase instead of a recurring subscription',
     ],
@@ -166,7 +183,7 @@ export const appList: AppData[] = [
         items: [
           'Animated precipitation radar over a live map',
           'Real-time AQI with PM2.5 and health guidance',
-          '10-day forecast, deeper detail, and smart weather notifications',
+          '10-day forecast, deeper detail, smart notifications, and richer planning tools',
         ],
       },
       {
@@ -187,7 +204,7 @@ export const appList: AppData[] = [
       {
         question: 'Is Skylight a subscription?',
         answer:
-          'No. Skylight Pro is a one-time $2.99 purchase according to the current App Store listing.',
+          'No. Skylight Pro is positioned as a one-time $2.99 purchase on the current site.',
       },
       {
         question: 'Does Skylight track me?',
@@ -218,7 +235,201 @@ export const appList: AppData[] = [
       },
     ],
   },
+  {
+    slug: 'aloud',
+    name: 'Aloud',
+    category: 'Audiobooks',
+    headline: 'A beautiful Audiobookshelf player with built-in discovery, requests, and offline listening.',
+    shortDescription:
+      'Browse your library, request new titles, download books for offline playback, and resume where you left off in a cleaner listening experience.',
+    longDescription:
+      'Aloud is an iPhone app for Audiobookshelf users that combines a polished player, a better library experience, and ReadMeABook-powered discovery so finding and requesting your next listen feels effortless.',
+    iconSrc: '/apps/aloud/icon.png',
+    iconAlt: 'Aloud app icon',
+    releaseStage: 'testflight',
+    availability: 'Currently in TestFlight for iPhone',
+    statusLabel: 'In TestFlight',
+    priceLabel: 'Pre-release preview',
+    primaryLink: {
+      label: 'Contact about TestFlight',
+      href: 'mailto:support@ohanalabs.app?subject=Aloud%20TestFlight',
+    },
+    gradient: 'from-slate-100 via-white to-sky-100',
+    accent: 'bg-sky-500',
+    screenshotPaths: [],
+    highlights: [
+      'Audiobookshelf library with progress filters and a Continue Listening hero',
+      'ReadMeABook discovery with search, trending titles, and one-tap requests',
+      'Offline downloads, mini player controls, and full-player scrubbing',
+      'Home screen widget, Siri shortcuts, and progress sync back to your server',
+    ],
+    featureSections: [
+      {
+        title: 'A better library view',
+        items: [
+          'Filter by all, in progress, finished, or not started',
+          'Search by book, author, narrator, or series',
+          'Pick up quickly with a Continue Listening hero and clear badges',
+        ],
+      },
+      {
+        title: 'Built for listening',
+        items: [
+          'Use the floating mini player for fast control from anywhere in the app',
+          'Open the full player for scrubbing, skip controls, and lock-screen playback',
+          'Download books on-device for offline listening with per-track progress',
+        ],
+      },
+      {
+        title: 'Discovery without friction',
+        items: [
+          'Browse featured and trending titles through ReadMeABook',
+          'Request new books in a tap and let your server import them',
+          'Use widgets and Siri shortcuts to jump back into your current listen',
+        ],
+      },
+    ],
+    supportFaqs: [
+      {
+        question: 'Who is Aloud for?',
+        answer:
+          'Aloud is built for Audiobookshelf users who want a more polished iPhone listening experience with better discovery and easier playback.',
+      },
+      {
+        question: 'Is Aloud available on the App Store?',
+        answer:
+          'Not yet. Aloud is currently in TestFlight while Ohana Labs continues refining the app.',
+      },
+      {
+        question: 'Does Aloud require a server?',
+        answer:
+          'Aloud is designed for Audiobookshelf libraries and can also demo sample content from the sign-in flow when available.',
+      },
+    ],
+    privacySections: [
+      {
+        title: 'Library and account data',
+        body:
+          'Aloud uses the Audiobookshelf server details and account information you provide so it can sign in, load your library, sync playback progress, and support downloads.',
+      },
+      {
+        title: 'Playback and downloads',
+        body:
+          'The app stores playback state, downloads, and app preferences needed to provide a smooth listening experience across sessions.',
+      },
+      {
+        title: 'Support requests',
+        body:
+          'If you contact support or share screenshots, that information is used only to help troubleshoot issues, improve TestFlight builds, or respond to your question.',
+      },
+      {
+        title: 'Questions',
+        body:
+          'For privacy questions or TestFlight support related to Aloud, contact support@ohanalabs.app.',
+      },
+    ],
+  },
+  {
+    slug: 'ohana-kitchen',
+    name: 'Ohana Kitchen',
+    category: 'Recipes',
+    headline: 'A warm, local-first recipe app for calmer cooking, better planning, and meals you will actually make.',
+    shortDescription:
+      'Save recipes from the web, organize your cookbook, plan the week, build shopping lists, and cook with a focused step-by-step mode.',
+    longDescription:
+      'Ohana Kitchen is a new recipe app from Ohana Labs that brings together Safari import, a clean cookbook, meal planning, shopping lists, and Live Activity timers in one thoughtful kitchen companion.',
+    iconSrc: '/apps/ohana-kitchen/icon.png',
+    iconAlt: 'Ohana Kitchen app icon',
+    releaseStage: 'testflight',
+    availability: 'Currently in TestFlight for iPhone',
+    statusLabel: 'In TestFlight',
+    priceLabel: 'Pre-release preview',
+    primaryLink: {
+      label: 'Contact about TestFlight',
+      href: 'mailto:support@ohanalabs.app?subject=Ohana%20Kitchen%20TestFlight',
+    },
+    gradient: 'from-orange-100 via-white to-lime-100',
+    accent: 'bg-amber-500',
+    screenshotPaths: [],
+    previewImageSrc: '/apps/ohana-kitchen/home-teaser.png',
+    previewImageAlt: 'Ohana Kitchen cookbook preview',
+    highlights: [
+      'Cookbook browsing with search, filters, and a clean visual grid',
+      'Import recipes from Safari links with ingredients, steps, and photos',
+      'Cook mode with step-by-step guidance and Live Activity timers',
+      'Meal planning and shopping lists built into the same flow',
+    ],
+    featureSections: [
+      {
+        title: 'A calmer cookbook',
+        items: [
+          'Browse recipes in a clean grid with search and category filters',
+          'Open a recipe with hero imagery, scaled servings, ingredients, and steps',
+          'Keep your collection local-first and easy to manage',
+        ],
+      },
+      {
+        title: 'Save recipes from anywhere',
+        items: [
+          'Paste a recipe URL to auto-fill title, ingredients, steps, and image',
+          'Use the Safari share extension to save recipes straight into the app',
+          'Turn scattered web inspiration into a cookbook you will actually use',
+        ],
+      },
+      {
+        title: 'Plan and cook with less chaos',
+        items: [
+          'Use cook mode for focused, step-by-step preparation',
+          'Run timers in Live Activities while you stay on task',
+          'Build a 14-day meal plan and shopping lists from your saved recipes',
+        ],
+      },
+    ],
+    supportFaqs: [
+      {
+        question: 'What is Ohana Kitchen?',
+        answer:
+          'Ohana Kitchen is a new Ohana Labs recipe app focused on recipe import, meal planning, shopping lists, and a calmer cooking flow.',
+      },
+      {
+        question: 'Is Ohana Kitchen available yet?',
+        answer:
+          'Not yet. Ohana Kitchen is currently being refined in TestFlight before a wider release.',
+      },
+      {
+        question: 'Can it save recipes from the web?',
+        answer:
+          'Yes. The current app direction includes URL import and a Safari share extension to bring recipes into your cookbook quickly.',
+      },
+    ],
+    privacySections: [
+      {
+        title: 'Recipe and planning data',
+        body:
+          'Ohana Kitchen stores recipe, meal plan, timer, and shopping list information needed to provide the core product experience you choose to use.',
+      },
+      {
+        title: 'Imported content',
+        body:
+          'If you import recipes from websites or use the share extension, the source content you choose to save is processed to populate recipe details inside the app.',
+      },
+      {
+        title: 'Support requests',
+        body:
+          'If you email support during TestFlight, any information you share is used only to answer your request, investigate bugs, or improve the app before release.',
+      },
+      {
+        title: 'Questions',
+        body:
+          'For privacy questions or TestFlight support related to Ohana Kitchen, contact support@ohanalabs.app.',
+      },
+    ],
+  },
 ];
+
+export const releasedApps = appList.filter((app) => app.releaseStage === 'app-store');
+
+export const previewApps = appList.filter((app) => app.releaseStage === 'testflight');
 
 export function getAppBySlug(slug: string) {
   return appList.find((app) => app.slug === slug);
