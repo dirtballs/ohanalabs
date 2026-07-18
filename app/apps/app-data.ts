@@ -257,6 +257,8 @@ export const appList: AppData[] = [
     gradient: 'from-slate-100 via-white to-sky-100',
     accent: 'bg-sky-500',
     screenshotPaths: [],
+    previewImageSrc: '/apps/aloud/library-preview.png',
+    previewImageAlt: 'Aloud library screen showing continue listening',
     highlights: [
       'Audiobookshelf library with progress filters and a Continue Listening hero',
       'ReadMeABook discovery with search, trending titles, and one-tap requests',
