@@ -427,6 +427,102 @@ export const appList: AppData[] = [
       },
     ],
   },
+  {
+    slug: 'sling',
+    name: 'Sling',
+    category: 'Link handoff',
+    headline: 'Send a link from your iPhone and find it already open on your Mac.',
+    shortDescription:
+      'Share a page from your phone and it opens in your Mac browser on its own, then stays in a searchable archive of everything you have ever sent.',
+    longDescription:
+      'Sling is a two-way link handoff for iPhone and Mac. Send a link from the share sheet at night and the tab is waiting when you log in the next morning, or send one from your Mac and your phone lets you know. Every link becomes a card you can search, pin, or archive later.',
+    iconSrc: '/apps/sling/icon.png',
+    iconAlt: 'Sling app icon',
+    releaseStage: 'testflight',
+    availability: 'iPhone app in TestFlight; Mac app coming soon',
+    statusLabel: 'Coming soon',
+    priceLabel: 'Pre-release preview',
+    primaryLink: {
+      label: 'Contact about TestFlight',
+      href: 'mailto:support@ohanalabs.app?subject=Sling%20TestFlight',
+    },
+    gradient: 'from-blue-100 via-white to-amber-100',
+    accent: 'bg-blue-600',
+    screenshotPaths: [],
+    previewImageSrc: '/apps/sling/archive-preview.png',
+    previewImageAlt: 'Sling archive on iPhone showing sent links as cards',
+    highlights: [
+      'Share from Safari on iPhone and the page opens on your Mac',
+      'Send from your Mac too, with a notification on your phone',
+      'A searchable archive of every link, with pin, archive, and delete',
+      'Syncs through your own iCloud account with no servers in between',
+    ],
+    featureSections: [
+      {
+        title: 'Send and forget',
+        items: [
+          'Share a link from Safari, or use Shortcuts and the Action button',
+          'Links arrive on your Mac in a second or two and open in your browser',
+          'Nothing steals focus, and nothing wakes your Mac to do it',
+        ],
+      },
+      {
+        title: 'Waiting for you in the morning',
+        items: [
+          'Send links from bed and the tabs are open when you log in',
+          'Anything sent while the Mac was asleep opens once you unlock it',
+          'Links older than a week stay in the archive instead of opening',
+        ],
+      },
+      {
+        title: 'An archive, not just a pipe',
+        items: [
+          'Every link becomes a card with its title, site, and preview image',
+          'Search by title, site, or the device that sent it',
+          'Pin what matters, archive what you have finished, delete the rest',
+        ],
+      },
+    ],
+    supportFaqs: [
+      {
+        question: 'What do I need to use Sling?',
+        answer:
+          'An iPhone and a Mac signed into the same iCloud account. The Mac app needs to be running to open links, and it lives in the menu bar so it stays out of the way.',
+      },
+      {
+        question: 'Does Sling wake my Mac?',
+        answer:
+          'No. Nothing in Sling wakes a sleeping Mac. Links sent while it is asleep are delivered when you wake it and log in, so the tabs are simply there when you sit down.',
+      },
+      {
+        question: 'When is it available?',
+        answer:
+          'The iPhone app is in TestFlight now and the Mac app is being finished for direct download. Email support@ohanalabs.app if you would like to try it early.',
+      },
+    ],
+    privacySections: [
+      {
+        title: 'Where your links are stored',
+        body:
+          'Links you send are stored in your own private iCloud database using CloudKit. Ohana Labs runs no server for Sling and cannot see the links you send.',
+      },
+      {
+        title: 'No account and no analytics',
+        body:
+          'Sling has no sign-up, no account, and no third-party analytics or advertising SDKs. It uses the iCloud account already on your devices.',
+      },
+      {
+        title: 'Link previews',
+        body:
+          'To show a title and preview image on each card, the app requests the page you shared directly from that website. Those requests come from your device, not from Ohana Labs.',
+      },
+      {
+        title: 'Questions',
+        body:
+          'For privacy questions or TestFlight support related to Sling, contact support@ohanalabs.app.',
+      },
+    ],
+  },
 ];
 
 export const releasedApps = appList.filter((app) => app.releaseStage === 'app-store');
