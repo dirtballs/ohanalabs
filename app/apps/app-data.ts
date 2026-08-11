@@ -431,9 +431,9 @@ export const appList: AppData[] = [
     slug: 'sling',
     name: 'Sling',
     category: 'Link handoff',
-    headline: 'Send a link from your iPhone and find it already open on your Mac.',
+    headline: 'Send a link from your iPhone and it opens on your Mac. Send one from your Mac and your phone lets you know.',
     shortDescription:
-      'Share a page from your phone and it opens in your Mac browser on its own, then stays in a searchable archive of everything you have ever sent.',
+      'Share a page from either device and it lands on the other: opening by itself on your Mac, arriving as a notification on your phone. Everything you send stays in a searchable archive on both.',
     longDescription:
       'Sling is a two-way link handoff for iPhone and Mac. Send a link from the share sheet at night and the tab is waiting when you log in the next morning, or send one from your Mac and your phone lets you know. Every link becomes a card you can search, pin, or archive later.',
     iconSrc: '/apps/sling/icon.png',
@@ -459,11 +459,19 @@ export const appList: AppData[] = [
     ],
     featureSections: [
       {
-        title: 'Send and forget',
+        title: 'Send from either device',
         items: [
-          'Share a link from Safari, or use Shortcuts and the Action button',
-          'Links arrive on your Mac in a second or two and open in your browser',
-          'Nothing steals focus, and nothing wakes your Mac to do it',
+          'Share from Safari on iPhone, or from the Share menu on your Mac',
+          'Use Shortcuts on both, or the Action button on your iPhone',
+          'Links arrive in a second or two without you doing anything else',
+        ],
+      },
+      {
+        title: 'Mac to iPhone as well',
+        items: [
+          'Send the page you are reading on your Mac straight to your phone',
+          'Your phone shows a quiet notification; tap it to open the link there',
+          'Useful for reading later, or for anything easier to do on a phone',
         ],
       },
       {
