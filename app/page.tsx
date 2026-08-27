@@ -41,7 +41,13 @@ export default function Home() {
           />
 
           <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-            <Reveal>
+            {/* Deliberately NOT wrapped in Reveal. Motion server-renders its
+                initial state as opacity:0, so reveal-gating the hero left the
+                headline invisible until hydration and pushed LCP to 3.1s on a
+                throttled phone. Above-the-fold copy paints immediately now;
+                only the screenshots animate, which also keeps this view to the
+                one-or-two animated elements the motion rules allow. */}
+            <div>
               <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-400">
                 iPhone apps, built with ohana in mind
               </p>
@@ -72,7 +78,7 @@ export default function Home() {
                   Get in touch
                 </a>
               </div>
-            </Reveal>
+            </div>
 
             {/* Visible on every size. When this was hidden below lg the
                 mobile hero had no image at all, which also handed LCP to

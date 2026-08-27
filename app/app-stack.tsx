@@ -1,22 +1,30 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { AppStoreLogo, ArrowRight } from '@phosphor-icons/react';
 import type { AppData } from './apps/app-data';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 /**
  * Sticky stack of app cards.
  *
- * Motivation (required before adding any animation): storytelling. The
- * studio ships five apps and the point of this section is that they are
- * one family, not a list. Physically stacking them, each card settling
- * over the last, says that in a way a grid cannot.
+ * Motivation: storytelling. The studio ships five apps and the point of
+ * this section is that they are one family, not a list. Physically
+ * stacking them, each card settling over the last, says that in a way a
+ * grid cannot.
+ *
+ * Pinning is DESKTOP ONLY. Five pinned sections is well past the
+ * one-to-two that scroll-jacking guidance allows, and on a phone it cost
+ * ten screens of hijacked scroll. Desktop keeps the choreography; small
+ * screens get an ordinary vertical scroll with no pinning at all, which
+ * also satisfies the motion-sensitivity rule for the devices where
+ * scroll-jacking is worst.
  *
  * GSAP lives here and only here. Motion drives the reveals in the other
  * sections; the two never share a component tree because they fight over
@@ -25,55 +33,59 @@ gsap.registerPlugin(ScrollTrigger);
 export function AppStack({ apps }: { apps: AppData[] }) {
   const root = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-    // Read the OS preference directly rather than via a hook: this runs
-    // once on mount and a hook would re-render the whole stack.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      // Pin only on large screens, and only when motion is welcome.
+      // matchMedia reverts its own context when the query stops matching.
+      mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
+        const cards = gsap.utils.toArray<HTMLElement>('.stack-card');
 
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>('.stack-card');
+        cards.forEach((card, i) => {
+          if (i === cards.length - 1) return;
 
-      cards.forEach((card, i) => {
-        if (i === cards.length - 1) return;
-
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top top',
-          endTrigger: cards[cards.length - 1],
-          end: 'top top',
-          pin: true,
-          pinSpacing: false,
-        });
-
-        // Each card shrinks and dims as the NEXT one arrives over it.
-        gsap.to(card, {
-          scale: 0.93,
-          opacity: 0.4,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: cards[i + 1],
-            start: 'top bottom',
+          ScrollTrigger.create({
+            trigger: card,
+            start: 'top top',
+            endTrigger: cards[cards.length - 1],
             end: 'top top',
-            scrub: true,
-          },
+            pin: true,
+            pinSpacing: false,
+          });
+
+          // Each card shrinks and dims as the NEXT one arrives over it.
+          gsap.to(card, {
+            scale: 0.93,
+            opacity: 0.4,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: cards[i + 1],
+              start: 'top bottom',
+              end: 'top top',
+              scrub: true,
+            },
+          });
         });
       });
-    }, el);
 
-    return () => ctx.revert();
-  }, []);
+      // Pin positions are measured from layout. A late font swap changes
+      // text metrics and shifts every trigger below it, so recompute once
+      // the real faces are in. Images already reserve space via explicit
+      // width/height, which is why measured CLS is 0.
+      document.fonts?.ready.then(() => ScrollTrigger.refresh());
+    },
+    { scope: root },
+  );
 
   return (
     <div ref={root} className="relative">
-      {apps.map((app, i) => (
+      {apps.map((app) => (
         <section
           key={app.slug}
-          className="stack-card flex min-h-[100dvh] items-center justify-center px-5 py-16 sm:px-8"
+          className="stack-card px-5 py-12 sm:px-8 lg:flex lg:min-h-[100dvh] lg:items-center lg:justify-center lg:py-16"
         >
-          <article className="relative w-full max-w-6xl overflow-hidden rounded-container border border-abyss-700 bg-abyss-900 shadow-lift">
+          <article className="relative w-full max-w-6xl overflow-hidden rounded-container border border-abyss-700 bg-abyss-900 shadow-lift lg:mx-auto">
             <div className="caustics opacity-70" aria-hidden="true" />
 
             <div className="relative grid gap-10 p-8 sm:p-12 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-16 lg:p-16">
@@ -123,17 +135,25 @@ export function AppStack({ apps }: { apps: AppData[] }) {
                   have a single preview frame. */}
               <div className="relative flex items-center justify-center gap-4">
                 {app.screenshotPaths.length > 0 ? (
+                  /* Three phones side by side rendered at 97px wide on a
+                     390px screen, which is too small to read anything. Below
+                     sm only the first screen shows, at a size worth looking
+                     at; the trio returns once there is room for it. */
                   app.screenshotPaths.slice(0, 3).map((src, n) => (
                     <div
                       key={src}
-                      className={`w-1/3 ${n === 1 ? '-translate-y-6' : n === 0 ? 'rotate-[-4deg]' : 'rotate-[4deg]'}`}
+                      className={
+                        n === 0
+                          ? 'w-[62%] sm:w-1/3 sm:rotate-[-4deg]'
+                          : `hidden w-1/3 sm:block ${n === 1 ? 'sm:-translate-y-6' : 'sm:rotate-[4deg]'}`
+                      }
                     >
                       <Image
                         src={src}
                         alt={`${app.name} screen ${n + 1}`}
                         width={1179}
                         height={2556}
-                        sizes="(min-width: 1024px) 15vw, 28vw"
+                        sizes="(min-width: 1024px) 15vw, (min-width: 640px) 28vw, 62vw"
                         className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
                       />
                     </div>
