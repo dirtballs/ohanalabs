@@ -420,12 +420,12 @@ export const appList: AppData[] = [
   {
     slug: 'sling',
     name: 'Sling',
-    category: 'Link handoff',
-    headline: 'Send a link from your iPhone and it opens on your Mac. Send one from your Mac and your phone lets you know.',
+    category: 'Links and clipboard',
+    headline: 'Links move between your iPhone and Mac. So does everything you copy.',
     shortDescription:
-      'Share a page from either device and it lands on the other: opening by itself on your Mac, arriving as a notification on your phone. Your clipboard follows you between them, and everything stays in a searchable archive on both.',
+      'Send a page from either device and it lands on the other. Everything you copy is kept as well, so your clipboard becomes a searchable history instead of a single slot you keep overwriting.',
     longDescription:
-      'Sling is a two-way link handoff for iPhone and Mac. Send a link from the share sheet at night and the tab is waiting when you log in the next morning, or send one from your Mac and your phone lets you know. Every link becomes a card you can search, pin, or archive later. Sling keeps your clipboard in step too: anything you copy on your Mac is on your phone by the time you pick it up.',
+      'Sling does two jobs. It hands links between your iPhone and Mac: send one from the share sheet at night and the tab is waiting when you log in, or send one from the Mac and your phone gets a quiet notification. It is also a proper clipboard manager. Every copy is kept rather than replaced by the next one, building a history you can search, pin, and paste from a keyboard on your phone. Links and clips both sync through your own iCloud, images stay on the Mac they came from, and anything a password manager marks confidential is never recorded.',
     iconSrc: '/apps/sling/icon.png',
     iconAlt: 'Sling app icon',
     releaseStage: 'testflight',
@@ -442,8 +442,10 @@ export const appList: AppData[] = [
     highlights: [
       'Share from Safari on iPhone and the page opens on your Mac',
       'Send from your Mac too, with a notification on your phone',
+      'A clipboard that keeps every copy instead of overwriting the last one',
+      'Search back through what you copied, and pin the things you reuse',
+      'A paste keyboard on iPhone for dropping any clip into any app',
       'A searchable archive of every link, with pin, archive, and delete',
-      'A shared clipboard: copy on your Mac and it is waiting on your phone',
       'Syncs through your own iCloud account with no servers in between',
     ],
     featureSections: [
@@ -453,6 +455,17 @@ export const appList: AppData[] = [
           'Share from Safari on iPhone, or from the Share menu on your Mac',
           'Use Shortcuts on both, or the Action button on your iPhone',
           'Links arrive in a second or two without you doing anything else',
+        ],
+      },
+      {
+        title: 'A clipboard that remembers',
+        items: [
+          'Every copy is kept, so the last one no longer replaces the one before',
+          'Search the history by what you copied or the app you copied it from',
+          'Pin the snippets you paste constantly and they stay at the top',
+          'A keyboard on iPhone for pasting any clip into whatever you are typing',
+          'Copy on the Mac and it is on your phone by the time you pick it up',
+          'Images stay on the Mac, and password manager copies are never recorded',
         ],
       },
       {
@@ -469,15 +482,6 @@ export const appList: AppData[] = [
           'Send links from bed and the tabs are open when you log in',
           'Anything sent while the Mac was asleep opens once you unlock it',
           'Links older than a week stay in the archive instead of opening',
-        ],
-      },
-      {
-        title: 'Your clipboard on both devices',
-        items: [
-          'Copy on your Mac and it is in Sling on your phone when you open it',
-          'A searchable history of what you copied, with the app it came from',
-          'A keyboard for pasting any of it into whatever you are typing in',
-          'Images stay on the Mac, and password manager copies are never recorded',
         ],
       },
       {
@@ -516,6 +520,11 @@ export const appList: AppData[] = [
         title: 'Where your links are stored',
         body:
           'Links you send are stored in your own private iCloud database using CloudKit. Ohana Labs runs no server for Sling and cannot see the links you send.',
+      },
+      {
+        title: 'What Sling keeps from your clipboard',
+        body:
+          'Text and links you copy are saved to your own private iCloud database so they are on both devices. Images are never synced and stay on the Mac they were copied from, and anything a password manager marks as confidential is never recorded at all. Clipboard history is deleted after a week unless you pin it, and a setting limits syncing to only the clips you pin if you would rather keep the rest local.',
       },
       {
         title: 'No account and no analytics',
