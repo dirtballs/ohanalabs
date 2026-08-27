@@ -9,9 +9,18 @@ import type { ReactNode } from 'react';
  * beat as it arrives matches that reading order instead of dumping the
  * whole page at once.
  *
- * Uses whileInView rather than GSAP ScrollTrigger because nothing here
- * pins or scrubs, and Motion's viewport observer is far lighter.
+ * `initial` is deliberately NOT gated on useReducedMotion. That hook
+ * returns false during SSR and true on the client for anyone with the OS
+ * setting on, so gating `initial` made the server and client markup
+ * disagree and React logged a hydration mismatch. Only `transition`
+ * varies, which never reaches the server-rendered DOM. Reduced-motion
+ * users are additionally covered by the CSS override in globals.css,
+ * which forces these elements visible regardless of scroll position.
  */
+const from = { opacity: 0, y: 22 };
+const to = { opacity: 1, y: 0 };
+const ease = [0.16, 1, 0.3, 1] as const;
+
 export function Reveal({
   children,
   delay = 0,
@@ -26,10 +35,10 @@ export function Reveal({
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={from}
+      whileInView={to}
       viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={reduce ? { duration: 0 } : { duration: 0.65, delay, ease }}
     >
       {children}
     </motion.div>
@@ -51,10 +60,10 @@ export function RevealGroup({
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : 'hidden'}
+      initial="hidden"
       whileInView="shown"
       viewport={{ once: true, amount: 0.2 }}
-      variants={{ hidden: {}, shown: { transition: { staggerChildren: stagger } } }}
+      variants={{ hidden: {}, shown: { transition: { staggerChildren: reduce ? 0 : stagger } } }}
     >
       {children}
     </motion.div>
@@ -67,14 +76,10 @@ export function RevealItem({ children, className }: { children: ReactNode; class
   return (
     <motion.div
       className={className}
-      variants={
-        reduce
-          ? undefined
-          : {
-              hidden: { opacity: 0, y: 20 },
-              shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
-            }
-      }
+      variants={{
+        hidden: from,
+        shown: { ...to, transition: reduce ? { duration: 0 } : { duration: 0.6, ease } },
+      }}
     >
       {children}
     </motion.div>

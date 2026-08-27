@@ -16,8 +16,6 @@ export type AppData = {
     label: string;
     href: string;
   };
-  gradient: string;
-  accent: string;
   screenshotPaths: string[];
   previewImageSrc?: string;
   previewImageAlt?: string;
@@ -57,8 +55,6 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
     },
-    gradient: 'from-rose-100 via-white to-sky-100',
-    accent: 'bg-rose-500',
     screenshotPaths: [
       '/apps/steady/screenshot-1.webp',
       '/apps/steady/screenshot-2.webp',
@@ -156,8 +152,6 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
     },
-    gradient: 'from-amber-100 via-white to-cyan-100',
-    accent: 'bg-amber-400',
     screenshotPaths: [
       '/apps/skylight/screenshot-1.webp',
       '/apps/skylight/screenshot-2.webp',
@@ -254,8 +248,6 @@ export const appList: AppData[] = [
       label: 'Contact about TestFlight',
       href: 'mailto:support@ohanalabs.app?subject=Aloud%20TestFlight',
     },
-    gradient: 'from-slate-100 via-white to-sky-100',
-    accent: 'bg-sky-500',
     screenshotPaths: [],
     previewImageSrc: '/apps/aloud/library-preview.png',
     previewImageAlt: 'Aloud library screen showing continue listening',
@@ -350,8 +342,6 @@ export const appList: AppData[] = [
       label: 'Contact about TestFlight',
       href: 'mailto:support@ohanalabs.app?subject=Ohana%20Kitchen%20TestFlight',
     },
-    gradient: 'from-orange-100 via-white to-lime-100',
-    accent: 'bg-amber-500',
     screenshotPaths: [],
     previewImageSrc: '/apps/ohana-kitchen/home-teaser.png',
     previewImageAlt: 'Ohana Kitchen cookbook preview',
@@ -446,8 +436,6 @@ export const appList: AppData[] = [
       label: 'Contact about TestFlight',
       href: 'mailto:support@ohanalabs.app?subject=Sling%20TestFlight',
     },
-    gradient: 'from-blue-100 via-white to-amber-100',
-    accent: 'bg-blue-600',
     screenshotPaths: [],
     previewImageSrc: '/apps/sling/archive-preview.png',
     previewImageAlt: 'Sling archive on iPhone showing sent links as cards',

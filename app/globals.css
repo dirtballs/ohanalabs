@@ -39,7 +39,10 @@
   --color-sand-100: #f2ede2;
   --color-sand-300: #cfc7b6;
   --color-sand-500: #9a9384;
-  --color-sand-600: #7b7568;
+  /* 4.79:1 on abyss-900, 5.02:1 on abyss-950. The previous #7b7568 came
+     in at 4.28 and failed WCAG AA for the footer and the small uppercase
+     labels, which are the only places this token is used. */
+  --color-sand-600: #878175;
 
   /* Single accent, shallow-water turquoise. */
   --color-tide-200: #a5e9dd;

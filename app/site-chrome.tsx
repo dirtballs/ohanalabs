@@ -65,8 +65,9 @@ export function SiteNav() {
 
       {open ? (
         <motion.div
-          initial={reduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={reduce ? { duration: 0 } : { duration: 0.2 }}
           className="fixed inset-0 z-50 bg-abyss-950 p-5 sm:hidden"
         >
           <div className="flex h-16 items-center justify-between">
