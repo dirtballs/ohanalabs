@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { AppStoreLogo, ArrowRight } from '@phosphor-icons/react/ssr';
 import { appList, getAppBySlug } from '../app-data';
 import type { AppData } from '../app-data';
+import { SiteNav } from '../../site-chrome';
+import { BackLink, SiteFooter } from '../../page-shell';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -22,29 +25,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${app.name} | Ohana Labs`,
+    title: app.name,
     description: app.shortDescription,
-    alternates: {
-      canonical: `https://www.ohanalabs.app/apps/${app.slug}`,
+    alternates: { canonical: `https://www.ohanalabs.app/apps/${app.slug}` },
+    openGraph: {
+      title: `${app.name} · Ohana Labs`,
+      description: app.shortDescription,
+      url: `https://www.ohanalabs.app/apps/${app.slug}`,
+      type: 'website',
     },
   };
 }
 
+/** Screenshots when the app has them, the single preview frame when it
+ *  does not. Every app in app-data currently has one or the other, so
+ *  there is no third fallback branch to go stale. */
 function AppVisual({ app }: { app: AppData }) {
   if (app.screenshotPaths.length > 0) {
     return (
-      <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-2">
-        {app.screenshotPaths.map((path, index) => (
-          <div
-            key={path}
-            className="overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-lg shadow-slate-950/[0.06]"
-          >
+      <div className="grid grid-cols-3 gap-3 sm:gap-5">
+        {app.screenshotPaths.map((path, i) => (
+          <div key={path} className={i === 1 ? 'sm:-translate-y-8' : ''}>
             <Image
               src={path}
-              alt={`${app.name} screenshot ${index + 1}`}
-              width={300}
-              height={650}
-              className="h-auto w-full rounded-[1.5rem]"
+              alt={`${app.name} screen ${i + 1}`}
+              width={1179}
+              height={2556}
+              priority={i === 0}
+              sizes="(min-width: 1024px) 16vw, 30vw"
+              className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
             />
           </div>
         ))}
@@ -52,46 +61,17 @@ function AppVisual({ app }: { app: AppData }) {
     );
   }
 
-  if (app.previewImageSrc) {
-    return (
-      <div className="relative mx-auto w-full max-w-[24rem]">
-        <div className="absolute -inset-4 rounded-[2.5rem] bg-white/70 blur-2xl" />
-        <div className="relative overflow-hidden rounded-[2.25rem] border border-white/80 bg-white/70 p-3 shadow-2xl shadow-slate-950/[0.10] backdrop-blur">
-          <div className="overflow-hidden rounded-[1.8rem]">
-            <Image
-              src={app.previewImageSrc}
-              alt={app.previewImageAlt ?? `${app.name} preview`}
-              width={945}
-              height={2048}
-              className="h-auto w-full"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/78 p-8 shadow-2xl shadow-slate-950/[0.10] backdrop-blur">
-      <div className="absolute right-[-5rem] top-[-5rem] size-48 rounded-full bg-sky-100 blur-3xl" />
-      <div className="relative">
-        <div className="flex items-center gap-4">
-          <div className="overflow-hidden rounded-[1.75rem] bg-white shadow-lg ring-1 ring-white/80">
-            <Image src={app.iconSrc} alt={app.iconAlt} width={96} height={96} className="block size-24 object-cover" />
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">{app.statusLabel}</p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{app.name}</p>
-          </div>
-        </div>
-        <div className="mt-8 space-y-3">
-          {app.highlights.slice(0, 4).map((highlight) => (
-            <div key={highlight} className="rounded-2xl bg-slate-50 px-5 py-4 text-base leading-7 text-slate-700">
-              {highlight}
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="mx-auto w-full max-w-[17rem]">
+      <Image
+        src={app.previewImageSrc as string}
+        alt={app.previewImageAlt ?? `${app.name} on iPhone`}
+        width={945}
+        height={2048}
+        priority
+        sizes="(min-width: 1024px) 20vw, 60vw"
+        className="h-auto w-full rounded-container shadow-glow ring-1 ring-white/10"
+      />
     </div>
   );
 }
@@ -105,119 +85,156 @@ export default async function AppDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7fbff] px-6 py-10 text-slate-950 sm:px-10">
-      <div className="mx-auto max-w-7xl">
-        <Link
-          href="/"
-          className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-950"
-        >
-          Back to home
-        </Link>
+    <>
+      <SiteNav />
 
-        <section
-          className={`mt-8 overflow-hidden rounded-[2.75rem] border border-white bg-gradient-to-br ${app.gradient} p-8 shadow-2xl shadow-slate-950/[0.06] sm:p-12`}
-        >
-          <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-slate-700">{app.category}</p>
-              <div className="mt-5 flex items-center gap-5">
-                <div className="overflow-hidden rounded-[1.75rem] bg-white shadow-lg ring-1 ring-white/80">
-                  <Image src={app.iconSrc} alt={app.iconAlt} width={112} height={112} className="block size-28 object-cover" />
+      <main id="main">
+        {/* Hero. Full-bleed ambient field so the detail page reads as part
+            of the same site as the homepage stack. */}
+        <section className="relative overflow-hidden border-b border-white/5">
+          <div className="caustics" aria-hidden="true" />
+          <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-24 sm:px-8 lg:pb-28">
+            <BackLink href="/#apps">All apps</BackLink>
+
+            <div className="mt-12 grid gap-14 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
+              <div>
+                <div className="flex items-center gap-4">
+                  <Image
+                    src={app.iconSrc}
+                    alt={app.iconAlt}
+                    width={72}
+                    height={72}
+                    className="size-16 rounded-inner ring-1 ring-white/10 sm:size-18"
+                  />
+                  <div>
+                    <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-400">
+                      {app.statusLabel}
+                    </p>
+                    <p className="mt-1.5 text-sm text-sand-500">{app.category}</p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-5xl font-semibold tracking-[-0.055em] sm:text-7xl">{app.name}</h1>
-                  <p className="mt-3 text-sm font-semibold text-slate-700">{app.availability}</p>
-                </div>
-              </div>
-              <p className="mt-8 max-w-3xl text-2xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-3xl">{app.headline}</p>
-              <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">{app.longDescription}</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                {app.primaryLink ? (
-                  <a
-                    href={app.primaryLink.href}
-                    className="rounded-full bg-slate-950 px-6 py-3 text-center text-sm font-semibold text-white shadow-xl shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
+
+                <h1 className="mt-9 text-[clamp(3rem,8vw,6rem)] font-semibold leading-[0.95] tracking-display">
+                  {app.name}
+                </h1>
+
+                <p className="mt-6 max-w-[32ch] text-xl leading-8 text-sand-100 sm:text-2xl sm:leading-9">
+                  {app.headline}
+                </p>
+
+                <p className="mt-6 max-w-[60ch] leading-8 text-sand-500">{app.longDescription}</p>
+
+                <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-6">
+                  <div>
+                    <dt className="text-[0.625rem] font-semibold uppercase tracking-label text-sand-600">
+                      Availability
+                    </dt>
+                    <dd className="mt-2 text-sm font-medium text-sand-100">{app.availability}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.625rem] font-semibold uppercase tracking-label text-sand-600">
+                      Access
+                    </dt>
+                    <dd className="mt-2 text-sm font-medium text-sand-100">{app.priceLabel}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                  {app.primaryLink ? (
+                    <a
+                      href={app.primaryLink.href}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-6 py-3.5 text-sm font-semibold text-abyss-950 transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
+                    >
+                      {app.appStoreUrl ? <AppStoreLogo size={17} weight="fill" /> : null}
+                      {app.primaryLink.label}
+                    </a>
+                  ) : null}
+                  <Link
+                    href={`/apps/${app.slug}/support`}
+                    className="inline-flex items-center justify-center rounded-full border border-abyss-600 px-6 py-3.5 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
                   >
-                    {app.primaryLink.label}
-                  </a>
-                ) : null}
-                <Link
-                  href={`/apps/${app.slug}/support`}
-                  className="rounded-full border border-slate-200 bg-white/85 px-6 py-3 text-center text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
-                >
-                  Visit support
-                </Link>
-              </div>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-3xl bg-white/80 p-5 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Status</p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">{app.statusLabel}</p>
-                </div>
-                <div className="rounded-3xl bg-white/80 p-5 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Access</p>
-                  <p className="mt-2 text-base font-semibold text-slate-900">{app.priceLabel}</p>
+                    Support
+                  </Link>
                 </div>
               </div>
-            </div>
 
-            <AppVisual app={app} />
+              <AppVisual app={app} />
+            </div>
           </div>
         </section>
 
-        <section className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-[2.5rem] bg-slate-950 p-8 text-white shadow-2xl shadow-slate-950/15 sm:p-10">
-            <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-300">Why it stands out</p>
-            <div className="mt-6 space-y-4">
-              {app.highlights.map((highlight) => (
-                <div key={highlight} className="rounded-3xl bg-white/[0.05] p-5 text-base leading-7 text-white/80">
-                  {highlight}
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Highlights. Numbered editorial list, no card per row. */}
+        <section className="border-b border-white/5">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-28">
+            <h2 className="text-3xl font-semibold leading-[1.1] tracking-display sm:text-5xl">
+              What it does well.
+            </h2>
 
-          <div className="rounded-[2.5rem] border border-slate-200/70 bg-white p-8 shadow-xl shadow-slate-950/[0.04] sm:p-10">
-            <div className="space-y-8">
+            <ol className="mt-14 grid gap-px overflow-hidden rounded-container bg-white/5 sm:grid-cols-2">
+              {app.highlights.map((highlight, i) => (
+                <li key={highlight} className="flex gap-5 bg-abyss-900/80 p-7">
+                  <span className="tabular shrink-0 text-sm font-semibold text-tide-400">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <p className="leading-7 text-sand-300">{highlight}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* Feature detail. Two-column reference layout, hairlines between
+            groups rather than a border on every item. */}
+        <section className="border-b border-white/5">
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-28">
+            <div className="grid gap-16">
               {app.featureSections.map((section) => (
-                <section key={section.title}>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-900">{section.title}</h2>
-                  <ul className="mt-4 space-y-3 text-base leading-8 text-slate-600">
+                <div key={section.title} className="grid gap-6 lg:grid-cols-[0.35fr_1fr] lg:gap-16">
+                  <h2 className="text-2xl font-semibold tracking-heading text-sand-100 lg:text-lg lg:text-sand-500">
+                    {section.title}
+                  </h2>
+                  <ul className="grid gap-4 sm:grid-cols-2">
                     {section.items.map((item) => (
-                      <li key={item} className="rounded-2xl bg-slate-50 px-5 py-4">
+                      <li key={item} className="leading-7 text-sand-300">
                         {item}
                       </li>
                     ))}
                   </ul>
-                </section>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2.5rem] border border-white bg-white p-8 shadow-xl shadow-slate-950/[0.04] sm:p-10">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-700">Need help?</p>
-              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-5xl">
+        {/* Wayfinding out. */}
+        <section>
+          <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-24">
+            <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+              <h2 className="max-w-[18ch] text-3xl font-semibold leading-[1.1] tracking-display sm:text-4xl">
                 Support, privacy, and release details in one place.
               </h2>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={`/apps/${app.slug}/support`}
-                className="rounded-full border border-slate-200 bg-slate-50 px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
-              >
-                Support page
-              </Link>
-              <Link
-                href={`/apps/${app.slug}/privacy`}
-                className="rounded-full border border-slate-200 bg-slate-50 px-5 py-3 text-center text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
-              >
-                Privacy page
-              </Link>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={`/apps/${app.slug}/support`}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-abyss-600 px-5 py-3 text-sm font-semibold text-sand-300 transition hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
+                >
+                  Support
+                  <ArrowRight size={15} weight="bold" />
+                </Link>
+                <Link
+                  href={`/apps/${app.slug}/privacy`}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-abyss-600 px-5 py-3 text-sm font-semibold text-sand-300 transition hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
+                >
+                  Privacy
+                  <ArrowRight size={15} weight="bold" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
-      </div>
-    </main>
+      </main>
+
+      <SiteFooter />
+    </>
   );
 }

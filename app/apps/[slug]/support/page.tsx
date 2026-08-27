@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { appList, getAppBySlug } from '../../app-data';
+import { SiteNav } from '../../../site-chrome';
+import { BackLink, InnerPage, MailLink, PageHeader } from '../../../page-shell';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -20,11 +21,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${app.name} Support | Ohana Labs`,
+    title: `${app.name} support`,
     description: `Support resources for ${app.name}.`,
-    alternates: {
-      canonical: `https://www.ohanalabs.app/apps/${app.slug}/support`,
-    },
+    alternates: { canonical: `https://www.ohanalabs.app/apps/${app.slug}/support` },
   };
 }
 
@@ -37,66 +36,69 @@ export default async function SupportPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7fbff] px-6 py-16 text-slate-950 sm:px-10">
-      <div className="mx-auto max-w-4xl">
-        <Link
-          href={`/apps/${app.slug}`}
-          className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-950"
-        >
-          Back to {app.name}
-        </Link>
+    <>
+      <SiteNav />
 
-        <div className="mt-8 rounded-[2.5rem] border border-white/80 bg-white/80 p-8 shadow-xl shadow-slate-950/[0.05] backdrop-blur sm:p-12">
-          <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-700">Support</p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">{app.name} support</h1>
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            Questions, bug reports, billing issues, or feature ideas for {app.name} can all start here.
-          </p>
+      <InnerPage>
+        <BackLink href={`/apps/${app.slug}`}>{app.name}</BackLink>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <a
-              href="mailto:support@ohanalabs.app"
-              className="rounded-3xl bg-slate-50 p-6 transition hover:bg-slate-100"
-            >
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Email</p>
-              <p className="mt-2 text-lg font-semibold text-slate-900">support@ohanalabs.app</p>
+        <PageHeader
+          eyebrow="Support"
+          title={`${app.name} support`}
+          lede={`Questions, bug reports, billing issues, or feature ideas for ${app.name} can all start here.`}
+        />
+
+        <div className="mt-14 grid gap-px overflow-hidden rounded-container bg-white/5 sm:grid-cols-2">
+          <a
+            href="mailto:support@ohanalabs.app"
+            className="bg-abyss-900 p-7 transition hover:bg-abyss-800"
+          >
+            <p className="text-[0.625rem] font-semibold uppercase tracking-label text-sand-600">Email</p>
+            <p className="mt-3 text-lg font-semibold text-tide-400">support@ohanalabs.app</p>
+          </a>
+          {app.appStoreUrl ? (
+            <a href={app.appStoreUrl} className="bg-abyss-900 p-7 transition hover:bg-abyss-800">
+              <p className="text-[0.625rem] font-semibold uppercase tracking-label text-sand-600">
+                App Store
+              </p>
+              <p className="mt-3 text-lg font-semibold text-tide-400">Open the {app.name} listing</p>
             </a>
-            {app.appStoreUrl ? (
-              <a
-                href={app.appStoreUrl}
-                className="rounded-3xl bg-slate-50 p-6 transition hover:bg-slate-100"
-              >
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">App Store</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">Open {app.name} listing</p>
-              </a>
-            ) : (
-              <div className="rounded-3xl bg-slate-50 p-6">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Release stage</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">{app.statusLabel}</p>
-              </div>
-            )}
-          </div>
-
-          <section className="mt-12">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Frequently asked questions</h2>
-            <div className="mt-5 space-y-4">
-              {app.supportFaqs.map((faq) => (
-                <div key={faq.question} className="rounded-3xl bg-slate-50 p-6">
-                  <h3 className="text-lg font-semibold text-slate-900">{faq.question}</h3>
-                  <p className="mt-2 leading-8 text-slate-600">{faq.answer}</p>
-                </div>
-              ))}
+          ) : (
+            <div className="bg-abyss-900 p-7">
+              <p className="text-[0.625rem] font-semibold uppercase tracking-label text-sand-600">
+                Release stage
+              </p>
+              <p className="mt-3 text-lg font-semibold text-sand-100">{app.statusLabel}</p>
             </div>
-          </section>
-
-          <section className="mt-12 rounded-[2rem] bg-slate-950 p-6 text-white">
-            <h2 className="text-2xl font-semibold tracking-tight">When you email support</h2>
-            <p className="mt-3 leading-8 text-white/75">
-              Include the app name, device model, iOS version, and a short description of what happened. Screenshots are helpful when relevant.
-            </p>
-          </section>
+          )}
         </div>
-      </div>
-    </main>
+
+        <section className="mt-20">
+          <h2 className="text-2xl font-semibold tracking-heading text-sand-100 sm:text-3xl">
+            Common questions
+          </h2>
+
+          <dl className="mt-10 grid gap-10">
+            {app.supportFaqs.map((faq) => (
+              <div key={faq.question} className="grid gap-3 lg:grid-cols-[0.45fr_1fr] lg:gap-12">
+                <dt className="text-base font-semibold text-sand-100">{faq.question}</dt>
+                <dd className="max-w-[64ch] leading-8 text-sand-500">{faq.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="mt-20 rounded-container border border-abyss-700 bg-abyss-900 p-8 sm:p-10">
+          <h2 className="text-xl font-semibold tracking-heading text-sand-100">
+            When you email support
+          </h2>
+          <p className="mt-3 max-w-[62ch] leading-8 text-sand-500">
+            Include the app name, device model, iOS version, and a short description of what
+            happened. Screenshots help when the problem is something you can see. Send it to{' '}
+            <MailLink />.
+          </p>
+        </section>
+      </InnerPage>
+    </>
   );
 }

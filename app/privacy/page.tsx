@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { SiteNav } from '../site-chrome';
+import { BackLink, ContactCard, InnerPage, MailLink, PageHeader, ProseSections } from '../page-shell';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Ohana Labs',
-  description: 'Privacy policy for Ohana Labs LLC and its apps.',
-  alternates: {
-    canonical: 'https://www.ohanalabs.app/privacy',
-  },
+  title: 'Privacy Policy',
+  description: 'Privacy policy for the Ohana Labs website and apps.',
+  alternates: { canonical: 'https://www.ohanalabs.app/privacy' },
 };
 
 const sections = [
@@ -39,43 +38,25 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#f7fbff] px-6 py-16 text-slate-950 sm:px-10">
-      <div className="mx-auto max-w-4xl">
-        <Link
-          href="/"
-          className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-950"
-        >
-          Back to home
-        </Link>
-        <div className="mt-8 rounded-[2.5rem] border border-white/80 bg-white/80 p-8 shadow-xl shadow-slate-950/[0.05] backdrop-blur sm:p-12">
-          <p className="text-sm font-bold uppercase tracking-[0.24em] text-sky-700">Privacy</p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">Privacy Policy</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-            This policy explains how Ohana Labs LLC handles information connected to this website and our apps.
-          </p>
-          <p className="mt-4 text-sm text-slate-500">Effective date: June 5, 2026</p>
+    <>
+      <SiteNav />
 
-          <div className="mt-12 space-y-8">
-            {sections.map((section) => (
-              <section key={section.title}>
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-900">{section.title}</h2>
-                <p className="mt-3 text-base leading-8 text-slate-600">{section.body}</p>
-              </section>
-            ))}
-          </div>
+      <InnerPage>
+        <BackLink href="/">Home</BackLink>
 
-          <section className="mt-12 rounded-[2rem] bg-slate-50 p-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Contact</h2>
-            <p className="mt-3 text-base leading-8 text-slate-600">
-              For privacy questions or requests, contact{' '}
-              <a className="font-semibold text-slate-900" href="mailto:support@ohanalabs.app">
-                support@ohanalabs.app
-              </a>
-              .
-            </p>
-          </section>
-        </div>
-      </div>
-    </main>
+        <PageHeader
+          eyebrow="Privacy"
+          title="Privacy Policy"
+          lede="How Ohana Labs LLC handles information connected to this website and our apps."
+          meta="Effective date: June 5, 2026"
+        />
+
+        <ProseSections sections={sections} />
+
+        <ContactCard>
+          For privacy questions or requests, contact <MailLink />.
+        </ContactCard>
+      </InnerPage>
+    </>
   );
 }
