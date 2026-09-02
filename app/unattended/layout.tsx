@@ -22,6 +22,27 @@ export const metadata: Metadata = {
   alternates: { canonical: '/unattended' },
 };
 
+const gtagInline = `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18425955930');
+  gtag('event', 'conversion', {
+      'send_to': 'AW-18425955930/N0ftCKSj9-wcENqM19JE',
+      'value': 1.0,
+      'currency': 'USD'
+  });
+`;
+
+/* Google Ads snippet, this route only. The loader hoists into <head>.
+   Do not move these tags into the root layout. */
 export default function UnattendedLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/next-script-for-ga */}
+      <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18425955930" />
+      <script dangerouslySetInnerHTML={{ __html: gtagInline }} />
+      {children}
+    </>
+  );
 }
