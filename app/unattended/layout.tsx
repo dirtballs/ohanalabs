@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 const description =
-  'A Grok Bot desk on your machine. You tap 2FA when it asks. Morning brief, inbox, weekly wrap. $399 install or $29 kit.';
+  'A desk on your machine. Morning: calendar and email, what needs you today. Drafts in your voice that never send themselves. Weekly: what got done and what is still open. $399 install.';
 
 export const metadata: Metadata = {
   title: { absolute: 'Unattended' },
