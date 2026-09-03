@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Unattended. A Grok Bot desk on your machine.';
+export const alt = 'Unattended. It sits on your computer and does the desk work.';
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -42,11 +42,11 @@ export default function OpengraphImage() {
             maxWidth: 920,
           }}
         >
-          A Grok Bot desk on your machine.
+          It sits on your computer and does the desk work.
         </div>
 
         <div style={{ fontSize: 28, color: '#9c9688', display: 'flex' }}>
-          You tap 2FA. Morning brief. Inbox. Weekly wrap. $399 or $29.
+          You tap 2FA. You hit send. $399.
         </div>
       </div>
     ),
