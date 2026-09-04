@@ -27,11 +27,6 @@ const gtagInline = `
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'AW-18425955930');
-  gtag('event', 'conversion', {
-      'send_to': 'AW-18425955930/N0ftCKSj9-wcENqM19JE',
-      'value': 1.0,
-      'currency': 'USD'
-  });
 `;
 
 /* Google Ads snippet, this route only. The loader hoists into <head>.
