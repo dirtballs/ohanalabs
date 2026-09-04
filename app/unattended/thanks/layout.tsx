@@ -12,8 +12,21 @@ export const metadata: Metadata = {
   },
 };
 
-/* No conversion event here. Ads has no Purchase send_to yet.
-   Loader + config come from the parent /unattended layout. */
+const conversionInline = `
+  gtag('event', 'conversion', {
+    'send_to': 'AW-18425955930/71m9CKHY0-4cENqMl9JE',
+    'value': 399.0,
+    'currency': 'USD'
+  });
+`;
+
+/* Purchase conversion on this route only. Loader + config come from
+   the parent /unattended layout. Do not fire this on landing. */
 export default function ThanksLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script dangerouslySetInnerHTML={{ __html: conversionInline }} />
+      {children}
+    </>
+  );
 }
