@@ -12,21 +12,8 @@ export const metadata: Metadata = {
   },
 };
 
-const conversionInline = `
-  gtag('event', 'conversion', {
-    'send_to': 'AW-18425955930/71m9CKHY0-4cENqMl9JE',
-    'value': 399.0,
-    'currency': 'USD'
-  });
-`;
-
-/* Purchase conversion on this route only. Loader + config come from
-   the parent /unattended layout. Do not fire this on landing. */
+/* Conversion is injected in the root document <head> for this path
+   only. Do not put a conversion event on /unattended. */
 export default function ThanksLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <script dangerouslySetInnerHTML={{ __html: conversionInline }} />
-      {children}
-    </>
-  );
+  return children;
 }
