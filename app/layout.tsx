@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { GoogleAdsHead, unattendedAdsPath } from './unattended/google-ads-head';
 import './globals.css';
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' });
@@ -27,10 +29,14 @@ export const metadata: Metadata = {
 /* The page is locked dark by design direction, so there is no theme
    script and no toggle. `color-scheme: dark` in globals.css tells the
    browser to render form controls and scrollbars to match. */
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = (await headers()).get('x-pathname') ?? '';
+  const ads = unattendedAdsPath(pathname);
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
+        {ads.showTag ? <GoogleAdsHead conversion={ads.showConversion} /> : null}
         {/* Motion server-renders its `initial` state, so every reveal ships
             as opacity:0. With JS disabled or broken that would leave the
             page blank. Force them visible when no script runs. */}
