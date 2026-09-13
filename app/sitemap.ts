@@ -10,6 +10,7 @@ const built = new Date().toISOString().slice(0, 10);
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: BASE, lastModified: built, changeFrequency: 'monthly', priority: 1 },
+    { url: `${BASE}/jaderun`, lastModified: built, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/unattended`, lastModified: built, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/unattended/thanks`, lastModified: built, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${BASE}/help`, lastModified: built, changeFrequency: 'monthly', priority: 0.6 },

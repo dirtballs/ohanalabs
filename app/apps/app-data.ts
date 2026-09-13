@@ -16,6 +16,8 @@ export type AppData = {
     label: string;
     href: string;
   };
+  /** Optional override for AppStack details link (defaults to /apps/{slug}). */
+  detailHref?: string;
   screenshotPaths: string[];
   screenshotAlts?: string[];
   previewImageSrc?: string;
@@ -554,6 +556,72 @@ export const appList: AppData[] = [
       },
     ],
   },
+  {
+    slug: 'jade-run',
+    name: 'Jade Run',
+    category: 'Tile matching',
+    headline: 'Match tiles. Build a run.',
+    shortDescription:
+      'A tile matching game about reading the board, keeping a clean chain, and choosing the charm that changes the run. Clear every tile before the board locks.',
+    longDescription:
+      'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
+    iconSrc: '/apps/jade-run-icon.png',
+    iconAlt: 'Jade Run app icon',
+    releaseStage: 'coming-soon',
+    availability: 'Coming soon to the App Store for iPhone',
+    statusLabel: 'App Store soon',
+    priceLabel: 'Pre-release',
+    primaryLink: {
+      label: 'Ask for TestFlight',
+      href: 'mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight',
+    },
+    detailHref: '/jaderun',
+    screenshotPaths: [],
+    highlights: [
+      'Free-tile matching with depth and combo scoring',
+      'Charm shelf that bends tempo, score, and finish bonuses',
+      'Quick Run and Classic Run board ladders',
+      'Daily shared board and friend challenges with JR2 codes',
+    ],
+    featureSections: [
+      {
+        title: 'How a run works',
+        items: [
+          'Match free tiles before the board locks',
+          'Keep a five-second combo rhythm for multiplier climbs',
+          'Draft charms that change depth, tempo, suits, and clear bonus',
+        ],
+      },
+      {
+        title: 'Boards and challenges',
+        items: [
+          'Quick Run: three compact boards',
+          'Classic Run: eight boards with rising targets',
+          'Daily UTC board and JR2 friend challenges',
+        ],
+      },
+    ],
+    supportFaqs: [
+      {
+        question: 'When is Jade Run available?',
+        answer:
+          'Jade Run is coming soon to the App Store. Email support@ohanalabs.app with subject Jade Run TestFlight if you want an early build.',
+      },
+      {
+        question: 'Where are the rules?',
+        answer:
+          'The full how-to-play guide lives at ohanalabs.app/jaderun — scoring, charms, layouts, and challenges.',
+      },
+    ],
+    privacySections: [
+      {
+        title: 'Questions',
+        body:
+          'For privacy questions related to Jade Run, contact support@ohanalabs.app.',
+      },
+    ],
+  },
+
 ];
 
 export const releasedApps = appList.filter((app) => app.releaseStage === 'app-store');

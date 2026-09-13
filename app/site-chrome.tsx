@@ -8,6 +8,7 @@ import { WaveMark } from './wave-mark';
 
 const links = [
   { label: 'Apps', href: '/#apps' },
+  { label: 'Jade Run', href: '/jaderun' },
   { label: 'Why Ohana', href: '/#ohana' },
 ];
 

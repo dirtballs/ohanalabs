@@ -120,12 +120,19 @@ export function AppStack({ apps }: { apps: AppData[] }) {
                       <AppStoreLogo size={17} weight="fill" />
                       App Store
                     </a>
+                  ) : app.primaryLink ? (
+                    <a
+                      href={app.primaryLink.href}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-5 py-3 text-sm font-semibold text-abyss-950 transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
+                    >
+                      {app.primaryLink.label}
+                    </a>
                   ) : null}
                   <Link
-                    href={`/apps/${app.slug}`}
+                    href={app.detailHref ?? `/apps/${app.slug}`}
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-abyss-600 px-5 py-3 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
                   >
-                    {app.appStoreUrl ? 'App details' : 'Preview details'}
+                    {app.appStoreUrl ? 'App details' : app.detailHref ? 'How to play' : 'Preview details'}
                     <ArrowRight size={15} weight="bold" />
                   </Link>
                 </div>

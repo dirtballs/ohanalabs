@@ -61,8 +61,8 @@ export default function Home() {
               </h1>
 
               <p className="mt-8 max-w-[38ch] text-lg leading-8 text-sand-500 sm:text-xl">
-                {title(spell(appList.length))} apps for your health, your weather, your books, and
-                what is for dinner.
+                {title(spell(appList.length))} apps for your health, your weather, your books,
+                what is for dinner, and a tile-matching run.
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
