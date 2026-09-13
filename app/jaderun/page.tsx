@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Check, Lightning, Stack, Target } from '@phosphor-icons/react/ssr';
 import { SiteNav } from '../site-chrome';
@@ -89,6 +90,30 @@ export default function JadeRunPage() {
             See the charms
           </a>
         </div>
+
+        <section className="mt-16" aria-label="Jade Run screenshots">
+          <div className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {[
+              ['/apps/jaderun/screenshot-1.webp', 'Board mid-chain with a score pop'],
+              ['/apps/jaderun/screenshot-2.webp', 'Draft — choose your first charm'],
+              ['/apps/jaderun/screenshot-3.webp', 'Run banner near the board target'],
+              ['/apps/jaderun/screenshot-4.webp', 'Daily result card'],
+              ['/apps/jaderun/screenshot-5.webp', 'Tile sets — Ivory, Slate, Sakura, Lacquer'],
+            ].map(([src, alt]) => (
+              <figure key={src} className="w-[42%] shrink-0 sm:w-[28%] lg:w-[18%]">
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={1206}
+                  height={2622}
+                  sizes="(min-width: 1024px) 18vw, (min-width: 640px) 28vw, 42vw"
+                  className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
+                />
+                <figcaption className="mt-3 text-xs leading-5 text-sand-600">{alt}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
 
         <section className="mt-20 grid gap-px overflow-hidden rounded-container bg-white/5 sm:grid-cols-4" aria-label="Jade Run at a glance">
           {[

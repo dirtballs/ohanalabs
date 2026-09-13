@@ -576,7 +576,20 @@ export const appList: AppData[] = [
       href: 'mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight',
     },
     detailHref: '/jaderun',
-    screenshotPaths: [],
+    screenshotPaths: [
+      '/apps/jaderun/screenshot-1.webp',
+      '/apps/jaderun/screenshot-2.webp',
+      '/apps/jaderun/screenshot-3.webp',
+      '/apps/jaderun/screenshot-4.webp',
+      '/apps/jaderun/screenshot-5.webp',
+    ],
+    screenshotAlts: [
+      'Jade Run board mid-chain with a score pop',
+      'Jade Run draft screen — choose your first charm',
+      'Jade Run banner near the board target',
+      'Jade Run daily result card',
+      'Jade Run tile sets — Ivory, Slate, Sakura, Lacquer',
+    ],
     highlights: [
       'Free-tile matching with depth and combo scoring',
       'Charm shelf that bends tempo, score, and finish bonuses',
