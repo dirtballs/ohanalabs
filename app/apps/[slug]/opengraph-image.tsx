@@ -35,14 +35,14 @@ export default async function AppOpengraphImage({ params }: { params: Promise<{ 
           padding: '80px',
           backgroundColor: '#070d0c',
           backgroundImage:
-            'radial-gradient(circle at 82% 18%, rgba(35,191,165,0.28), transparent 58%), radial-gradient(circle at 10% 90%, rgba(18,160,138,0.20), transparent 55%)',
+            'radial-gradient(circle at 82% 18%, rgba(47,126,216,0.28), transparent 58%), radial-gradient(circle at 10% 90%, rgba(19,56,139,0.20), transparent 55%)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
           <svg width="44" height="30" viewBox="0 0 32 22" fill="none">
             <path
               d="M2 15.5c3.1 0 3.1-4.4 6.2-4.4s3.1 4.4 6.2 4.4 3.1-4.4 6.2-4.4 3.1 4.4 6.2 4.4"
-              stroke="#4fd6be"
+              stroke="#2F7ED8"
               strokeWidth="2.4"
               strokeLinecap="round"
             />
@@ -77,7 +77,7 @@ export default async function AppOpengraphImage({ params }: { params: Promise<{ 
           </div>
         </div>
 
-        <div style={{ fontSize: 26, color: '#4fd6be', display: 'flex' }}>{status}</div>
+        <div style={{ fontSize: 26, color: '#2F7ED8', display: 'flex' }}>{status}</div>
       </div>
     ),
     size,
