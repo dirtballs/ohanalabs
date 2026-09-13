@@ -48,7 +48,7 @@ function AppVisual({ app }: { app: AppData }) {
           <div key={path} className={i === 1 ? 'sm:-translate-y-8' : ''}>
             <Image
               src={path}
-              alt={`${app.name} screen ${i + 1}`}
+              alt={app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`}
               width={1179}
               height={2556}
               priority={i === 0}

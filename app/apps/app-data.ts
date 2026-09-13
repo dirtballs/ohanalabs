@@ -7,7 +7,7 @@ export type AppData = {
   longDescription: string;
   iconSrc: string;
   iconAlt: string;
-  releaseStage: 'app-store' | 'testflight';
+  releaseStage: 'app-store' | 'testflight' | 'coming-soon';
   availability: string;
   statusLabel: string;
   priceLabel: string;
@@ -17,6 +17,7 @@ export type AppData = {
     href: string;
   };
   screenshotPaths: string[];
+  screenshotAlts?: string[];
   previewImageSrc?: string;
   previewImageAlt?: string;
   highlights: string[];
@@ -39,9 +40,9 @@ export const appList: AppData[] = [
     slug: 'steady',
     name: 'Steady',
     category: 'GLP-1 tracking',
-    headline: 'The complete GLP-1 tracker for injections, progress, nutrition, and follow-through.',
+    headline: 'Today, doses, weight, and the journey — one GLP-1 home.',
     shortDescription:
-      'Track injections, weight, doses, side effects, meals, labs, and progress in one thoughtful place designed to make health routines feel manageable.',
+      'See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
     longDescription:
       'Steady helps people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications stay organized with reminders, trends, exports, and day-to-day health context.',
     iconSrc: '/apps/steady-icon.png',
@@ -60,35 +61,40 @@ export const appList: AppData[] = [
       '/apps/steady/screenshot-2.webp',
       '/apps/steady/screenshot-3.webp',
     ],
+    screenshotAlts: [
+      'Steady Today — next dose, weight, and daily essentials',
+      'Steady Doses — dose timeline with sites and weekly windows',
+      'Steady Weight — weight journey and recent weigh-ins',
+    ],
     highlights: [
-      'Apple Health sync for weight, sleep, and wellness context',
-      'AI food scan, macro logging, and protein tracking',
-      'PDF exports, visit prep, and a browser dashboard at steadydose.app',
-      'Lab tracking, refill reminders, and post-GLP-1 support',
+      'Today board for next dose, weight, water, protein, and check-ins',
+      'Dose timeline with sites and weekly windows',
+      'Weight journey charts tied to dose chapters',
+      'Apple Health sync and provider-ready exports',
     ],
     featureSections: [
       {
         title: 'Track your injections',
         items: [
           'Log every dose with date, time, site, and notes',
-          'Rotate injection sites with a body map tracker',
-          'Set reminders and visualize medication cycles across the week',
+          'See sites on a timeline and rotate through weekly windows',
+          'Set reminders so the next shot is waiting on Today',
         ],
       },
       {
         title: 'See your progress clearly',
         items: [
-          'Track weight, milestones, body measurements, and non-scale victories',
-          'Compare progress photos and follow trend charts over time',
-          'Monitor food noise, energy, protein, and muscle-preservation habits',
+          'Watch the scale next to starting weight and the goal you set',
+          'Follow weight journey charts alongside dose chapters',
+          'Keep water, protein, and daily check-ins on the same board',
         ],
       },
       {
         title: 'Stay organized between visits',
         items: [
-          'Manage vials, refill timing, titration history, and lab results',
+          'Sync weight and wellness context from Apple Health',
           'Export clinician-ready PDFs for appointments and check-ins',
-          'Keep your health story in one place instead of scattered notes',
+          'Keep the story of your weeks in one place instead of scattered notes',
         ],
       },
     ],
@@ -96,7 +102,7 @@ export const appList: AppData[] = [
       {
         question: 'Who is Steady for?',
         answer:
-          'Steady is designed for GLP-1 users who want one place to track doses, weight, side effects, meals, progress, and provider-ready exports.',
+          'Steady is for GLP-1 users who want one place for the next shot, the dose log, the scale, and a week-by-week story they can export for a visit.',
       },
       {
         question: 'Does Steady sync with Apple Health?',
@@ -146,7 +152,7 @@ export const appList: AppData[] = [
     releaseStage: 'app-store',
     availability: 'Available now on the App Store for iPhone',
     statusLabel: 'Live on the App Store',
-    priceLabel: '$2.99 one-time unlock for Skylight Pro',
+    priceLabel: '$4.99 one-time unlock for Skylight Ultra',
     appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
     primaryLink: {
       label: 'Download on the App Store',
@@ -157,11 +163,16 @@ export const appList: AppData[] = [
       '/apps/skylight/screenshot-2.webp',
       '/apps/skylight/screenshot-3.webp',
     ],
+    screenshotAlts: [
+      'Skylight Home — current conditions and hourly forecast',
+      'Skylight Live Radar — observed radar over the islands',
+      'Skylight Outlook — the days ahead',
+    ],
     highlights: [
       'No ads, no account required, and no tracking',
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
-      'One-time Pro purchase instead of a recurring subscription',
+      'One-time Ultra purchase instead of a recurring subscription',
     ],
     featureSections: [
       {
@@ -173,7 +184,7 @@ export const appList: AppData[] = [
         ],
       },
       {
-        title: 'Skylight Pro',
+        title: 'Skylight Ultra',
         items: [
           'Animated precipitation radar over a live map',
           'Real-time AQI with PM2.5 and health guidance',
@@ -198,7 +209,7 @@ export const appList: AppData[] = [
       {
         question: 'Is Skylight a subscription?',
         answer:
-          'No. Skylight Pro is positioned as a one-time $2.99 purchase on the current site.',
+          'No. Skylight Ultra is a one-time $4.99 unlock, not a subscription.',
       },
       {
         question: 'Does Skylight track me?',
@@ -428,7 +439,7 @@ export const appList: AppData[] = [
       'Sling does two jobs. It hands links between your iPhone and Mac: send one from the share sheet at night and the tab is waiting when you log in, or send one from the Mac and your phone gets a quiet notification. It is also a proper clipboard manager. Every copy is kept rather than replaced by the next one, building a history you can search, pin, and paste from a keyboard on your phone. Links and clips both sync through your own iCloud, images stay on the Mac they came from, and anything a password manager marks confidential is never recorded.',
     iconSrc: '/apps/sling/icon.png',
     iconAlt: 'Sling app icon',
-    releaseStage: 'testflight',
+    releaseStage: 'coming-soon',
     availability: 'iPhone app in TestFlight; Mac app coming soon',
     statusLabel: 'Coming soon',
     priceLabel: 'Pre-release preview',
@@ -548,6 +559,8 @@ export const appList: AppData[] = [
 export const releasedApps = appList.filter((app) => app.releaseStage === 'app-store');
 
 export const previewApps = appList.filter((app) => app.releaseStage === 'testflight');
+
+export const comingSoonApps = appList.filter((app) => app.releaseStage === 'coming-soon');
 
 export function getAppBySlug(slug: string) {
   return appList.find((app) => app.slug === slug);

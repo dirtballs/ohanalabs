@@ -1,11 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from '@phosphor-icons/react/ssr';
-import { appList, previewApps, releasedApps } from './apps/app-data';
+import { appList, comingSoonApps, previewApps, releasedApps } from './apps/app-data';
 import { SiteNav } from './site-chrome';
 import { WaveMark } from './wave-mark';
 import { AppStack } from './app-stack';
 import { Reveal, RevealGroup, RevealItem } from './reveal';
+
+const CUSTOM_APP_MAIL = 'mailto:support@ohanalabs.app?subject=Custom%20iOS%20macOS%20app';
 
 const values: Array<[string, string]> = [
   ['Calm on purpose', 'An app should lower the volume of your day, not raise it.'],
@@ -63,7 +65,7 @@ export default function Home() {
                 what is for dinner.
               </p>
 
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
                   href="#apps"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-6 py-3.5 text-sm font-semibold text-abyss-950 transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
@@ -77,6 +79,12 @@ export default function Home() {
                 >
                   Get in touch
                 </a>
+                <a
+                  href={CUSTOM_APP_MAIL}
+                  className="inline-flex items-center justify-center rounded-full border border-abyss-600 px-6 py-3.5 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
+                >
+                  Want an app built?
+                </a>
               </div>
             </div>
 
@@ -88,7 +96,7 @@ export default function Home() {
                 <div className="absolute left-0 top-4 w-[50%] -rotate-6 lg:top-6 lg:w-[52%]">
                   <Image
                     src={skylight.screenshotPaths[0]}
-                    alt="Skylight showing current conditions and the hourly forecast"
+                    alt={skylight.screenshotAlts?.[0] ?? 'Skylight Home'}
                     width={1179}
                     height={2556}
                     priority
@@ -99,7 +107,7 @@ export default function Home() {
                 <div className="absolute right-0 top-14 w-[50%] rotate-3 lg:top-24 lg:w-[52%]">
                   <Image
                     src={steady.screenshotPaths[0]}
-                    alt="Steady showing an injection and weight log"
+                    alt={steady.screenshotAlts?.[0] ?? 'Steady Today'}
                     width={1179}
                     height={2556}
                     priority
@@ -121,9 +129,16 @@ export default function Home() {
                 {title(spell(appList.length))} apps for the parts of the day that repeat.
               </h2>
               <p className="mt-7 max-w-[52ch] text-lg leading-8 text-sand-500">
-                {title(spell(releasedApps.length))} on the App Store,{' '}
-                {spell(previewApps.length)} still in TestFlight. Ohana means family, and that sets the
-                bar.
+                {[
+                  `${title(spell(releasedApps.length))} on the App Store`,
+                  `${spell(previewApps.length)} in TestFlight`,
+                  comingSoonApps.length
+                    ? `${spell(comingSoonApps.length)} coming soon`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(', ')}
+                . Ohana means family, and that sets the bar.
               </p>
             </Reveal>
           </div>
@@ -168,16 +183,22 @@ export default function Home() {
                 There is always room at the table.
               </h2>
               <p className="mx-auto mt-7 max-w-[48ch] leading-8 text-sand-500">
-                Support questions, a TestFlight invite, or a bug you just hit. All of it lands in the
-                same inbox.
+                Support, a TestFlight ask, or a custom iOS / macOS build. Same inbox — say which in
+                the subject.
               </p>
-              <div className="mt-12 flex justify-center">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <a
                   href="mailto:support@ohanalabs.app"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-6 py-3.5 text-sm font-semibold text-abyss-950 transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
                 >
                   Get in touch
                   <ArrowRight size={16} weight="bold" />
+                </a>
+                <a
+                  href={CUSTOM_APP_MAIL}
+                  className="inline-flex items-center justify-center rounded-full border border-abyss-600 px-6 py-3.5 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
+                >
+                  Want an app built?
                 </a>
               </div>
             </Reveal>

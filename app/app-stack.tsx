@@ -150,7 +150,7 @@ export function AppStack({ apps }: { apps: AppData[] }) {
                     >
                       <Image
                         src={src}
-                        alt={`${app.name} screen ${n + 1}`}
+                        alt={app.screenshotAlts?.[n] ?? `${app.name} screen ${n + 1}`}
                         width={1179}
                         height={2556}
                         sizes="(min-width: 1024px) 15vw, (min-width: 640px) 28vw, 62vw"
