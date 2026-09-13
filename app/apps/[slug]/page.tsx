@@ -6,6 +6,7 @@ import { AppStoreLogo, ArrowRight } from '@phosphor-icons/react/ssr';
 import { appList, getAppBySlug } from '../app-data';
 import type { AppData } from '../app-data';
 import { SiteNav } from '../../site-chrome';
+import { AppVisual } from '../../app-visual';
 import { BackLink, SiteFooter } from '../../page-shell';
 
 type PageProps = {
@@ -35,45 +36,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'website',
     },
   };
-}
-
-/** Screenshots when the app has them, the single preview frame when it
- *  does not. Every app in app-data currently has one or the other, so
- *  there is no third fallback branch to go stale. */
-function AppVisual({ app }: { app: AppData }) {
-  if (app.screenshotPaths.length > 0) {
-    return (
-      <div className="grid grid-cols-3 gap-3 sm:gap-5">
-        {app.screenshotPaths.map((path, i) => (
-          <div key={path} className={i === 1 ? 'sm:-translate-y-8' : ''}>
-            <Image
-              src={path}
-              alt={app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`}
-              width={1179}
-              height={2556}
-              priority={i === 0}
-              sizes="(min-width: 1024px) 16vw, 30vw"
-              className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto w-full max-w-[17rem]">
-      <Image
-        src={app.previewImageSrc as string}
-        alt={app.previewImageAlt ?? `${app.name} on iPhone`}
-        width={945}
-        height={2048}
-        priority
-        sizes="(min-width: 1024px) 20vw, 60vw"
-        className="h-auto w-full rounded-container shadow-glow ring-1 ring-white/10"
-      />
-    </div>
-  );
 }
 
 export default async function AppDetailPage({ params }: PageProps) {

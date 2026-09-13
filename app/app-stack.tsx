@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ShotThumb, type Shot } from './shot-lightbox';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -145,26 +146,27 @@ export function AppStack({ apps }: { apps: AppData[] }) {
                   /* Three phones side by side rendered at 97px wide on a
                      390px screen, which is too small to read anything. Below
                      sm only the first screen shows, at a size worth looking
-                     at; the trio returns once there is room for it. */
-                  app.screenshotPaths.slice(0, 3).map((src, n) => (
-                    <div
-                      key={src}
-                      className={
-                        n === 0
-                          ? 'w-[62%] sm:w-1/3 sm:rotate-[-4deg]'
-                          : `hidden w-1/3 sm:block ${n === 1 ? 'sm:-translate-y-6' : 'sm:rotate-[4deg]'}`
-                      }
-                    >
-                      <Image
-                        src={src}
-                        alt={app.screenshotAlts?.[n] ?? `${app.name} screen ${n + 1}`}
-                        width={1179}
-                        height={2556}
+                     at; the trio returns once there is room for it.
+                     Click any shot to open a larger lightbox. */
+                  (() => {
+                    const shots: Shot[] = app.screenshotPaths.map((src, i) => ({
+                      src,
+                      alt: app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`,
+                    }));
+                    return app.screenshotPaths.slice(0, 3).map((src, n) => (
+                      <ShotThumb
+                        key={src}
+                        shots={shots}
+                        index={n}
+                        className={
+                          n === 0
+                            ? 'w-[62%] sm:w-1/3 sm:rotate-[-4deg]'
+                            : `hidden w-1/3 sm:block ${n === 1 ? 'sm:-translate-y-6' : 'sm:rotate-[4deg]'}`
+                        }
                         sizes="(min-width: 1024px) 15vw, (min-width: 640px) 28vw, 62vw"
-                        className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
                       />
-                    </div>
-                  ))
+                    ));
+                  })()
                 ) : app.previewImageSrc ? (
                   <div className="w-2/3 max-w-[16rem]">
                     <Image
