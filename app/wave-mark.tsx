@@ -1,110 +1,19 @@
 /**
- * The Ohana Labs mark: two palm trees.
+ * The Ohana Labs mark: a palm tree.
  *
- * Hand-rolled SVG is normally avoided, but the taste skill carves out
- * "a single, simple geometric mark" for brand marks specifically. Replaces
- * the old double-swell waves so the site reads more Hawaiian without a
- * full rebrand. Same currentColor stroke so tide teal still flows through.
+ * Uses the Phosphor TreePalm silhouette (fill) so it matches the rest of
+ * the site’s icon language and reads clean at header and hero sizes.
+ * Replaces the double-swell waves — Hawaiian without a full rebrand.
  */
 export function WaveMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 22" fill="none" aria-hidden="true" className={className}>
-      {/* left palm */}
-      <path
-        d="M9.5 19.5V9.2"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.5 9.2C7 8.4 5.2 6.2 4.3 3.8"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.5 9.2C12 8.4 13.8 6.2 14.7 3.8"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.5 9.2C6.6 10 4.5 10.4 3 10"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.5 9.2C12.4 10 14.5 10.4 16 10"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.5 9.2C8.2 7 7.5 5.2 7.2 3.4"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.45"
-      />
-      <path
-        d="M9.5 9.2C10.8 7 11.5 5.2 11.8 3.4"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.45"
-      />
-
-      {/* right palm */}
-      <path
-        d="M22.5 19.5V9.2"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.72"
-      />
-      <path
-        d="M22.5 9.2C20 8.4 18.2 6.2 17.3 3.8"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.72"
-      />
-      <path
-        d="M22.5 9.2C25 8.4 26.8 6.2 27.7 3.8"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.72"
-      />
-      <path
-        d="M22.5 9.2C19.6 10 17.5 10.4 16 10"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.72"
-      />
-      <path
-        d="M22.5 9.2C25.4 10 27.5 10.4 29 10"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.72"
-      />
-      <path
-        d="M22.5 9.2C21.2 7 20.5 5.2 20.2 3.4"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.4"
-      />
-      <path
-        d="M22.5 9.2C23.8 7 24.5 5.2 24.8 3.4"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        opacity="0.4"
-      />
+    <svg
+      viewBox="0 0 256 256"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M239.84,60.33a8,8,0,0,1-4.65,5.75L179,90.55a71.42,71.42,0,0,1,43.36,33.21,70.64,70.64,0,0,1,7.2,54.32A8,8,0,0,1,217,182.36l-81-61.68V224a8,8,0,0,1-16,0V120.68L39,182.36a8,8,0,0,1-12.57-4.28,70.64,70.64,0,0,1,7.2-54.32A71.42,71.42,0,0,1,77,90.55L20.81,66.08a8,8,0,0,1-2.6-12.85,66.86,66.86,0,0,1,97.74,0,72.21,72.21,0,0,1,12,17,72.21,72.21,0,0,1,12.05-17,66.86,66.86,0,0,1,97.74,0A8,8,0,0,1,239.84,60.33Z" />
     </svg>
   );
 }
