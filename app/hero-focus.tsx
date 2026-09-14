@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -173,6 +173,8 @@ export function HeroFocus({
 }) {
   const router = useRouter();
   const [focusedSlug, setFocusedSlug] = useState(defaultSlug);
+  const focusedAtPointerDown = useRef<string | null>(null);
+  const pointerActive = useRef(false);
   const focused =
     apps.find((app) => app.slug === focusedSlug) ??
     apps.find((app) => app.slug === defaultSlug) ??
@@ -193,7 +195,30 @@ export function HeroFocus({
     setFocusedSlug(slug);
   }
 
+  function onIconPointerDown() {
+    pointerActive.current = true;
+    focusedAtPointerDown.current = focusedSlug;
+  }
+
+  function onIconPointerUp() {
+    window.setTimeout(() => {
+      pointerActive.current = false;
+    }, 0);
+  }
+
   function onIconActivate(app: HeroApp) {
+    // Touch often synthesizes mouseenter before click. Record who was
+    // focused at pointerdown so the first tap only focuses; a second tap
+    // (or a click after hover) follows the primary CTA.
+    if (pointerActive.current) {
+      pointerActive.current = false;
+      if (focusedAtPointerDown.current === app.slug) {
+        openCta(heroPrimaryCta(app).href, router);
+        return;
+      }
+      focusApp(app.slug);
+      return;
+    }
     if (focusedSlug === app.slug) {
       openCta(heroPrimaryCta(app).href, router);
       return;
@@ -240,6 +265,11 @@ export function HeroFocus({
                 aria-label={app.name}
                 onMouseEnter={() => focusApp(app.slug)}
                 onFocus={() => focusApp(app.slug)}
+                onPointerDown={onIconPointerDown}
+                onPointerUp={onIconPointerUp}
+                onPointerCancel={() => {
+                  pointerActive.current = false;
+                }}
                 onClick={() => onIconActivate(app)}
                 className={`flex shrink-0 flex-col items-center gap-2 rounded-container px-2.5 py-2 transition duration-200 ${
                   selected
