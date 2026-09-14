@@ -52,7 +52,7 @@ export const appList: AppData[] = [
     releaseStage: 'app-store',
     availability: 'Available now on the App Store for iPhone',
     statusLabel: 'Live on the App Store',
-    priceLabel: 'Free download with in-app purchases',
+    priceLabel: 'Free download. Steady Premium $4.99, or Lifetime $99.99.',
     appStoreUrl: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
     primaryLink: {
       label: 'Download on the App Store',
@@ -62,17 +62,19 @@ export const appList: AppData[] = [
       '/apps/steady/screenshot-1.webp',
       '/apps/steady/screenshot-2.webp',
       '/apps/steady/screenshot-3.webp',
+      '/apps/steady/screenshot-4.webp',
     ],
     screenshotAlts: [
       'Steady Today — next dose, weight, and daily essentials',
       'Steady Doses — dose timeline with sites and weekly windows',
       'Steady Weight — weight journey and recent weigh-ins',
+      'Steady Journey — week-by-week story of doses and progress',
     ],
     highlights: [
       'Today board for next dose, weight, water, protein, and check-ins',
-      'Dose timeline with sites and weekly windows',
-      'Weight journey charts tied to dose chapters',
-      'Apple Health sync and provider-ready exports',
+      'SteadyShot Live Activity on Dynamic Island and Lock Screen',
+      'Multi-therapy roles (Primary / Ramping / Weaning) plus taper plans',
+      'Provider-ready PDF export + Apple Health sync',
     ],
     featureSections: [
       {
@@ -94,9 +96,9 @@ export const appList: AppData[] = [
       {
         title: 'Stay organized between visits',
         items: [
-          'Sync weight and wellness context from Apple Health',
-          'Export clinician-ready PDFs for appointments and check-ins',
-          'Keep the story of your weeks in one place instead of scattered notes',
+          'SteadyShot Live Activity on Dynamic Island and Lock Screen',
+          'Primary, Ramping, and Weaning roles with taper plans',
+          'Sync from Apple Health and export clinician-ready PDFs',
         ],
       },
     ],
