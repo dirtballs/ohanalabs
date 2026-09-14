@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react';
+import { useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'motion/react';
 import { AppStoreLogo, ArrowRight } from '@phosphor-icons/react';
 import type { AppData } from './apps/app-data';
@@ -38,11 +37,11 @@ type HeroCta = {
 };
 
 /**
- * Primary hero CTA for the focused app.
+ * Primary hero CTA for the focused app (hover/focus swap).
  *
- * Jade keeps /jaderun (detailHref) rather than the TestFlight mailto.
- * Live App Store apps use the real listing URL. Everything else uses
- * the existing primaryLink from app-data — no invented destinations.
+ * A detail page wins over a TestFlight mailto when both exist (Jade →
+ * /jaderun). Live App Store apps keep the real listing URL. Mailto
+ * primaryLinks stay on this button only — icon clicks never use them.
  */
 function heroPrimaryCta(app: HeroApp): HeroCta {
   if (app.detailHref) {
@@ -61,12 +60,9 @@ function heroPrimaryCta(app: HeroApp): HeroCta {
   return { href: `/apps/${app.slug}`, label: app.name, kind: 'detail' };
 }
 
-function openCta(href: string, router: ReturnType<typeof useRouter>) {
-  if (href.startsWith('/')) {
-    router.push(href);
-    return;
-  }
-  window.location.assign(href);
+/** In-site page for a strip click. Never mailto, never the App Store URL. */
+function heroPageHref(app: HeroApp) {
+  return app.detailHref ?? `/apps/${app.slug}`;
 }
 
 type Shot = { src: string; alt: string };
@@ -158,10 +154,9 @@ function HeroPhones({ app }: { app: HeroApp }) {
 /**
  * Interactive homepage hero: icon strip + phones + primary CTA.
  *
- * Hover (mouse/pen), keyboard focus-visible, or tap sets the focused app.
- * Touch does not use hover: first tap focuses, second tap follows the CTA.
- * Leaving the strip keeps that app — no snap-back to Jade. A second tap
- * (or Enter on a focused icon) follows the primary CTA; Explore is unchanged.
+ * Hover (mouse/pen) or keyboard focus-visible swaps phones and the CTA.
+ * Click / tap on an icon goes to that app's page (detailHref or /apps/{slug}),
+ * never a mailto. Leaving the strip keeps last focus — no snap-back to Jade.
  */
 export function HeroFocus({
   apps,
@@ -172,10 +167,7 @@ export function HeroFocus({
   defaultSlug: string;
   children: ReactNode;
 }) {
-  const router = useRouter();
   const [focusedSlug, setFocusedSlug] = useState(defaultSlug);
-  const focusedAtPointerDown = useRef<string | null>(null);
-  const pointerActive = useRef(false);
   const focused =
     apps.find((app) => app.slug === focusedSlug) ??
     apps.find((app) => app.slug === defaultSlug) ??
@@ -196,40 +188,14 @@ export function HeroFocus({
     setFocusedSlug(slug);
   }
 
-  function onIconPointerEnter(event: PointerEvent<HTMLButtonElement>, slug: string) {
+  function onIconPointerEnter(event: PointerEvent<HTMLAnchorElement>, slug: string) {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
     focusApp(slug);
   }
 
-  function onIconFocus(event: FocusEvent<HTMLButtonElement>, slug: string) {
+  function onIconFocus(event: FocusEvent<HTMLAnchorElement>, slug: string) {
     if (!event.currentTarget.matches(':focus-visible')) return;
     focusApp(slug);
-  }
-
-  function onIconPointerDown() {
-    pointerActive.current = true;
-    focusedAtPointerDown.current = focusedSlug;
-  }
-
-  function onIconPointerUp() {
-    window.setTimeout(() => {
-      pointerActive.current = false;
-    }, 0);
-  }
-
-  function onIconActivate(app: HeroApp) {
-    // Decide from the selection *before* this activation. Touch can
-    // focus the button (and some browsers synthesize hover) before
-    // click, which would otherwise look like a second tap.
-    const wasFocused = pointerActive.current
-      ? focusedAtPointerDown.current === app.slug
-      : focusedSlug === app.slug;
-    pointerActive.current = false;
-    if (wasFocused) {
-      openCta(heroPrimaryCta(app).href, router);
-      return;
-    }
-    focusApp(app.slug);
   }
 
   return (
@@ -263,20 +229,14 @@ export function HeroFocus({
           {apps.map((app) => {
             const selected = app.slug === focused.slug;
             return (
-              <button
+              <Link
                 key={app.slug}
-                type="button"
+                href={heroPageHref(app)}
                 title={app.name}
-                aria-pressed={selected}
                 aria-label={app.name}
+                aria-current={selected ? 'true' : undefined}
                 onPointerEnter={(event) => onIconPointerEnter(event, app.slug)}
                 onFocus={(event) => onIconFocus(event, app.slug)}
-                onPointerDown={onIconPointerDown}
-                onPointerUp={onIconPointerUp}
-                onPointerCancel={() => {
-                  pointerActive.current = false;
-                }}
-                onClick={() => onIconActivate(app)}
                 className={`flex shrink-0 flex-col items-center gap-2 rounded-container px-2.5 py-2 transition duration-200 ${
                   selected
                     ? 'bg-tide-400/10 ring-1 ring-tide-400/50'
@@ -297,7 +257,7 @@ export function HeroFocus({
                 >
                   {app.name}
                 </span>
-              </button>
+              </Link>
             );
           })}
         </div>
