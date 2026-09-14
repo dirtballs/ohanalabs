@@ -51,8 +51,8 @@ export default function Home() {
 
           <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
             <div>
-              <p className="inline-flex items-center rounded-full border border-tide-400/40 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
-                Jade Run · App Store soon
+              <p className="inline-flex items-center rounded-full border border-tide-400/40 bg-tide-400/10 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
+                Jade Run · App Store soon · beat the daily · challenge friends
               </p>
 
               <h1 className="mt-7 text-[clamp(3.5rem,11vw,9rem)] font-semibold leading-[0.88] tracking-display">
@@ -129,48 +129,85 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 1b. JADE LAUNCH STRIP — between hero and apps. */}
+        {/* 1b. JADE LAUNCH STRIP — flashier: compete + charms + runs. */}
         <section
           aria-label="Jade Run launch"
-          className="relative border-y border-white/5 bg-tide-900/25"
+          className="relative overflow-hidden border-y border-tide-400/25 bg-gradient-to-br from-tide-600/40 via-abyss-900 to-abyss-950"
         >
-          <div className="caustics opacity-50" aria-hidden="true" />
-          <div className="relative mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-20">
+          <div className="caustics opacity-70" aria-hidden="true" />
+          <div
+            className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-tide-400/25 blur-3xl"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-24">
             <div>
-              <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-400">
+              <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
                 Jade Run · coming to the App Store
               </p>
-              <h2 className="mt-4 max-w-[16ch] text-4xl font-semibold tracking-display sm:text-5xl">
-                Match tiles. Build a run.
+              <h2 className="mt-4 max-w-[18ch] text-4xl font-semibold tracking-display sm:text-6xl">
+                Same board. Better bragging rights.
               </h2>
-              <p className="mt-5 max-w-[44ch] text-lg leading-8 text-sand-300">
-                Read the board, keep the chain, draft the charm that changes the run.
+              <p className="mt-5 max-w-[46ch] text-lg leading-8 text-sand-100 sm:text-xl sm:leading-9">
+                Match tiles, keep a five-second chain, and draft charms that bend the run — then
+                beat today&apos;s shared daily or send a JR2 code and duel a friend on the exact same
+                board.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                {[
+                  ['Daily board', 'One shared UTC board. One attempt. Compare clean.'],
+                  ['Friend challenges', 'JR2 codes lock the same seed, shape, and target.'],
+                  ['Charm shelf', 'Tempo, score, suits, finish bonuses — pick your bend.'],
+                  ['Quick or Classic', 'Three-board sprint or an eight-board climb.'],
+                ].map(([title, body]) => (
+                  <li
+                    key={title}
+                    className="rounded-container border border-white/10 bg-abyss-950/50 px-4 py-3.5"
+                  >
+                    <p className="text-sm font-semibold text-tide-200">{title}</p>
+                    <p className="mt-1 text-sm leading-6 text-sand-300">{body}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/jaderun"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-6 py-3.5 text-sm font-semibold text-abyss-950 transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-6 py-3.5 text-sm font-semibold text-abyss-950 shadow-glow transition duration-200 hover:bg-tide-200 active:scale-[0.98]"
                 >
                   How to play
                   <ArrowRight size={16} weight="bold" />
                 </Link>
                 <a
                   href="mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight"
-                  className="inline-flex items-center justify-center rounded-full border border-abyss-600 px-6 py-3.5 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
+                  className="inline-flex items-center justify-center rounded-full border border-tide-400/40 bg-tide-400/10 px-6 py-3.5 text-sm font-semibold text-sand-100 transition duration-200 hover:border-tide-200 hover:bg-tide-400/20 active:scale-[0.98]"
                 >
                   Ask for TestFlight
                 </a>
               </div>
             </div>
-            <div className="mx-auto w-[58%] max-w-[16rem] lg:w-[70%]">
-              <Image
-                src={jade.screenshotPaths[0]}
-                alt={jade.screenshotAlts?.[0] ?? 'Jade Run board'}
-                width={1206}
-                height={2622}
-                sizes="(min-width: 1024px) 18vw, 50vw"
-                className="h-auto w-full rounded-inner shadow-lift ring-1 ring-white/10"
-              />
+
+            <div className="relative mx-auto flex w-full max-w-sm items-end justify-center gap-3 lg:max-w-none">
+              <div className="w-[46%] -rotate-6">
+                <Image
+                  src={jade.screenshotPaths[0]}
+                  alt={jade.screenshotAlts?.[0] ?? 'Jade Run board'}
+                  width={1206}
+                  height={2622}
+                  sizes="(min-width: 1024px) 14vw, 40vw"
+                  className="h-auto w-full rounded-inner shadow-glow ring-1 ring-tide-400/40"
+                />
+              </div>
+              <div className="w-[52%] translate-y-2 rotate-3">
+                <Image
+                  src={jade.screenshotPaths[3] ?? jade.screenshotPaths[1]}
+                  alt={jade.screenshotAlts?.[3] ?? jade.screenshotAlts?.[1] ?? 'Jade Run daily result'}
+                  width={1206}
+                  height={2622}
+                  sizes="(min-width: 1024px) 16vw, 45vw"
+                  className="h-auto w-full rounded-inner shadow-glow ring-1 ring-white/15"
+                />
+              </div>
             </div>
           </div>
         </section>

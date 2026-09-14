@@ -560,9 +560,9 @@ export const appList: AppData[] = [
     slug: 'jade-run',
     name: 'Jade Run',
     category: 'Tile matching',
-    headline: 'Match tiles. Build a run.',
+    headline: 'Same board. Better bragging rights.',
     shortDescription:
-      'A tile matching game about reading the board, keeping a clean chain, and choosing the charm that changes the run. Clear every tile before the board locks.',
+      'Match tiles, keep the chain, draft charms — then beat the daily or challenge a friend with a JR2 code on the exact same board.',
     longDescription:
       'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
     iconSrc: '/apps/jade-run-icon.png',
