@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, useState, type FocusEvent, type PointerEvent, type ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -158,7 +158,8 @@ function HeroPhones({ app }: { app: HeroApp }) {
 /**
  * Interactive homepage hero: icon strip + phones + primary CTA.
  *
- * Hover (desktop), focus (keyboard), or tap (touch) sets the focused app.
+ * Hover (mouse/pen), keyboard focus-visible, or tap sets the focused app.
+ * Touch does not use hover: first tap focuses, second tap follows the CTA.
  * Leaving the strip keeps that app — no snap-back to Jade. A second tap
  * (or Enter on a focused icon) follows the primary CTA; Explore is unchanged.
  */
@@ -195,6 +196,16 @@ export function HeroFocus({
     setFocusedSlug(slug);
   }
 
+  function onIconPointerEnter(event: PointerEvent<HTMLButtonElement>, slug: string) {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    focusApp(slug);
+  }
+
+  function onIconFocus(event: FocusEvent<HTMLButtonElement>, slug: string) {
+    if (!event.currentTarget.matches(':focus-visible')) return;
+    focusApp(slug);
+  }
+
   function onIconPointerDown() {
     pointerActive.current = true;
     focusedAtPointerDown.current = focusedSlug;
@@ -207,19 +218,14 @@ export function HeroFocus({
   }
 
   function onIconActivate(app: HeroApp) {
-    // Touch often synthesizes mouseenter before click. Record who was
-    // focused at pointerdown so the first tap only focuses; a second tap
-    // (or a click after hover) follows the primary CTA.
-    if (pointerActive.current) {
-      pointerActive.current = false;
-      if (focusedAtPointerDown.current === app.slug) {
-        openCta(heroPrimaryCta(app).href, router);
-        return;
-      }
-      focusApp(app.slug);
-      return;
-    }
-    if (focusedSlug === app.slug) {
+    // Decide from the selection *before* this activation. Touch can
+    // focus the button (and some browsers synthesize hover) before
+    // click, which would otherwise look like a second tap.
+    const wasFocused = pointerActive.current
+      ? focusedAtPointerDown.current === app.slug
+      : focusedSlug === app.slug;
+    pointerActive.current = false;
+    if (wasFocused) {
       openCta(heroPrimaryCta(app).href, router);
       return;
     }
@@ -263,8 +269,8 @@ export function HeroFocus({
                 title={app.name}
                 aria-pressed={selected}
                 aria-label={app.name}
-                onMouseEnter={() => focusApp(app.slug)}
-                onFocus={() => focusApp(app.slug)}
+                onPointerEnter={(event) => onIconPointerEnter(event, app.slug)}
+                onFocus={(event) => onIconFocus(event, app.slug)}
                 onPointerDown={onIconPointerDown}
                 onPointerUp={onIconPointerUp}
                 onPointerCancel={() => {
