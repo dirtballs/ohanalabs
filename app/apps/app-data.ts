@@ -44,13 +44,13 @@ export const appList: AppData[] = [
     category: 'GLP-1 tracking',
     headline: 'Today, doses, weight, and the journey — one GLP-1 home.',
     shortDescription:
-      'See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
+      'Steady 4.0 — Today board, Dose Chapters, lean-mass habits, ocean-blue redesign. See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
     longDescription:
       'Steady helps people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications stay organized with reminders, trends, exports, and day-to-day health context.',
     iconSrc: '/apps/steady-icon.png',
     iconAlt: 'Steady app icon',
     releaseStage: 'app-store',
-    availability: 'Available now on the App Store for iPhone',
+    availability: 'Available now on the App Store for iPhone. Requires iOS 17.0 or later.',
     statusLabel: 'Live on the App Store',
     priceLabel: 'Free download. Steady Premium $4.99, or Lifetime $99.99.',
     appStoreUrl: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
@@ -75,6 +75,7 @@ export const appList: AppData[] = [
       'SteadyShot Live Activity on Dynamic Island and Lock Screen',
       'Multi-therapy roles (Primary / Ramping / Weaning) plus taper plans',
       'Provider-ready PDF export + Apple Health sync',
+      'Dose Chapters, lean-mass habits, and an ocean-blue redesign in Steady 4.0',
     ],
     featureSections: [
       {
@@ -148,13 +149,14 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'See current conditions, hourly forecasts, radar, alerts, AQI, and smart weather guidance in a clean interface that stays out of the way.',
+      'Skylight 4.0 — real iPad layout, working Watch app, Ultra still $4.99 once. See current conditions, hourly forecasts, radar, alerts, AQI, and smart weather guidance in a clean interface that stays out of the way.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
     iconAlt: 'Skylight app icon',
     releaseStage: 'app-store',
-    availability: 'Available now on the App Store for iPhone',
+    availability:
+      'Available now on the App Store for iPhone, iPad, and Apple Watch. Requires iOS 17.0, iPadOS 17.0, or watchOS 10.0 or later.',
     statusLabel: 'Live on the App Store',
     priceLabel: '$4.99 one-time unlock for Skylight Ultra',
     appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
@@ -177,6 +179,7 @@ export const appList: AppData[] = [
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
+      'Real iPad layout and a working Apple Watch app in Skylight 4.0',
     ],
     featureSections: [
       {
