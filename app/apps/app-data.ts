@@ -559,7 +559,7 @@ export const appList: AppData[] = [
       {
         title: 'Questions',
         body:
-          'For privacy questions or TestFlight support related to Sling, contact support@ohanalabs.app.',
+          'For privacy questions related to Sling, contact support@ohanalabs.app.',
       },
     ],
   },
