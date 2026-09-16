@@ -168,11 +168,13 @@ export const appList: AppData[] = [
       '/apps/skylight/screenshot-1.webp',
       '/apps/skylight/screenshot-2.webp',
       '/apps/skylight/screenshot-3.webp',
+      '/apps/skylight/screenshot-4.webp',
     ],
     screenshotAlts: [
       'Skylight Home — current conditions and hourly forecast',
       'Skylight Live Radar — observed radar over the islands',
       'Skylight Outlook — the days ahead',
+      'Skylight Settings — units, appearance, and Ultra',
     ],
     highlights: [
       'No ads, no account required, and no tracking',
