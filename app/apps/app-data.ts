@@ -149,7 +149,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'Skylight 4.0 — real iPad layout, working Watch app, Ultra still $4.99 once. See current conditions, hourly forecasts, radar, alerts, AQI, and smart weather guidance in a clean interface that stays out of the way.',
+      'Skylight 4.1 — cleaner Home, clearer hourly, Watch forecast pages that actually work. Ultra still $4.99 once. Conditions, radar, alerts, AQI, and guidance without the clutter.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -171,17 +171,17 @@ export const appList: AppData[] = [
       '/apps/skylight/screenshot-4.webp',
     ],
     screenshotAlts: [
-      'Skylight Home — current conditions and hourly forecast',
-      'Skylight Live Radar — observed radar over the islands',
+      'Skylight Home — cleaner 4.1 layout and conditions',
+      'Skylight Hourly — temp strip on Home',
+      'Skylight Settings — severe weather, rain ahead, alert readiness',
       'Skylight Outlook — the days ahead',
-      'Skylight Settings — units, appearance, and Ultra',
     ],
     highlights: [
       'No ads, no account required, and no tracking',
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
-      'Real iPad layout and a working Apple Watch app in Skylight 4.0',
+      'Real iPad layout, plus Watch forecast pages and new complications in Skylight 4.1',
     ],
     featureSections: [
       {
