@@ -166,13 +166,11 @@ export const appList: AppData[] = [
     },
     screenshotPaths: [
       '/apps/skylight/screenshot-1.webp',
-      '/apps/skylight/screenshot-2.webp',
       '/apps/skylight/screenshot-3.webp',
       '/apps/skylight/screenshot-4.webp',
     ],
     screenshotAlts: [
       'Skylight Home — cleaner 4.1 layout and conditions',
-      'Skylight Hourly — temp strip on Home',
       'Skylight Settings — severe weather, rain ahead, alert readiness',
       'Skylight Outlook — the days ahead',
     ],
