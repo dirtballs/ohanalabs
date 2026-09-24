@@ -39,20 +39,20 @@ type HeroCta = {
 /**
  * Primary hero CTA for the focused app (hover/focus swap).
  *
- * A detail page wins over a TestFlight mailto when both exist (Jade →
- * /jaderun). Live App Store apps keep the real listing URL. Mailto
- * primaryLinks stay on this button only — icon clicks never use them.
+ * Live App Store apps use the listing URL. A detail page wins over a
+ * mailto primaryLink when there is no listing yet. Mailto primaryLinks
+ * stay on this button only — icon clicks never use them.
  */
 function heroPrimaryCta(app: HeroApp): HeroCta {
+  if (app.appStoreUrl) {
+    return { href: app.appStoreUrl, label: 'App Store', kind: 'store' };
+  }
   if (app.detailHref) {
     return {
       href: app.detailHref,
       label: app.slug === 'jade-run' ? 'Play Jade Run' : 'How to play',
       kind: 'detail',
     };
-  }
-  if (app.appStoreUrl) {
-    return { href: app.appStoreUrl, label: 'App Store', kind: 'store' };
   }
   if (app.primaryLink) {
     return { href: app.primaryLink.href, label: app.primaryLink.label, kind: 'link' };

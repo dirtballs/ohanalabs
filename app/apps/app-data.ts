@@ -567,18 +567,19 @@ export const appList: AppData[] = [
     category: 'Tile matching',
     headline: 'Same board. Better bragging rights.',
     shortDescription:
-      'Match tiles, keep the chain, draft charms — then beat the daily or challenge a friend with a JR2 code on the exact same board.',
+      'Jade Run 1.0 — match deep, chain fast, draft charms. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra $4.99 once.',
     longDescription:
       'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
     iconSrc: '/apps/jade-run-icon.png',
     iconAlt: 'Jade Run app icon',
-    releaseStage: 'coming-soon',
-    availability: 'Coming soon to the App Store for iPhone',
-    statusLabel: 'App Store soon',
-    priceLabel: 'Pre-release',
+    releaseStage: 'app-store',
+    availability: 'Available now on the App Store for iPhone and iPad. Requires iOS 26.0 or later.',
+    statusLabel: 'Live on the App Store',
+    priceLabel: 'Free download. Ultra $4.99 once.',
+    appStoreUrl: 'https://apps.apple.com/us/app/jade-run/id6802475679',
     primaryLink: {
-      label: 'Ask for TestFlight',
-      href: 'mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight',
+      label: 'Download on the App Store',
+      href: 'https://apps.apple.com/us/app/jade-run/id6802475679',
     },
     detailHref: '/jaderun',
     screenshotPaths: [
@@ -623,7 +624,7 @@ export const appList: AppData[] = [
       {
         question: 'When is Jade Run available?',
         answer:
-          'Jade Run is coming soon to the App Store. Email support@ohanalabs.app with subject Jade Run TestFlight if you want an early build.',
+          'Jade Run is live on the App Store for iPhone and iPad (iOS 26 or later). Free to download; Ultra is a one-time $4.99 unlock.',
       },
       {
         question: 'Where are the rules?',

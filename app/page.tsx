@@ -67,7 +67,7 @@ export default function Home() {
 
           <HeroFocus apps={stackApps.map(toHeroApp)} defaultSlug="jade-run">
             <p className="inline-flex items-center rounded-full border border-tide-400/40 bg-tide-400/10 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
-              Jade Run · App Store soon · beat the daily · challenge friends
+              Jade Run · live on the App Store · beat the daily · challenge friends
             </p>
 
             <h1 className="mt-7 text-[clamp(3.5rem,11vw,9rem)] font-semibold leading-[0.88] tracking-display">
@@ -96,7 +96,7 @@ export default function Home() {
           <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-24">
             <div>
               <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
-                Jade Run · coming to the App Store
+                Jade Run · live on the App Store
               </p>
               <h2 className="mt-4 max-w-[18ch] text-4xl font-semibold tracking-display sm:text-6xl">
                 Same board. Better bragging rights.
@@ -132,12 +132,14 @@ export default function Home() {
                   How to play
                   <ArrowRight size={16} weight="bold" />
                 </Link>
-                <a
-                  href="mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight"
-                  className="inline-flex items-center justify-center rounded-full border border-tide-400/40 bg-tide-400/10 px-6 py-3.5 text-sm font-semibold text-sand-100 transition duration-200 hover:border-tide-200 hover:bg-tide-400/20 active:scale-[0.98]"
-                >
-                  Ask for TestFlight
-                </a>
+                {jade.appStoreUrl ? (
+                  <a
+                    href={jade.appStoreUrl}
+                    className="inline-flex items-center justify-center rounded-full border border-tide-400/40 bg-tide-400/10 px-6 py-3.5 text-sm font-semibold text-sand-100 transition duration-200 hover:border-tide-200 hover:bg-tide-400/20 active:scale-[0.98]"
+                  >
+                    Download on the App Store
+                  </a>
+                ) : null}
               </div>
             </div>
 

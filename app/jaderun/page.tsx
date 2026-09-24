@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ShotGallery } from '../shot-lightbox';
-import { ArrowRight, Check, Lightning, Stack, Target } from '@phosphor-icons/react/ssr';
+import { AppStoreLogo, ArrowRight, Check, Lightning, Stack, Target } from '@phosphor-icons/react/ssr';
+import { getAppBySlug } from '../apps/app-data';
 import { SiteNav } from '../site-chrome';
 import { BackLink, InnerPage, PageHeader } from '../page-shell';
 
@@ -63,6 +64,9 @@ function RuleCard({
 }
 
 export default function JadeRunPage() {
+  const jade = getAppBySlug('jade-run');
+  const appStoreUrl = jade?.appStoreUrl;
+
   return (
     <>
       <SiteNav />
@@ -70,19 +74,22 @@ export default function JadeRunPage() {
         <BackLink href="/">Ohana Labs</BackLink>
 
         <PageHeader
-          eyebrow="Jade Run · pre-launch guide"
+          eyebrow="Jade Run · live on the App Store"
           title="Match tiles. Build a run."
           lede="Jade Run is a tile matching game about reading the board, keeping a clean chain, and choosing the charm that changes the run. Clear every tile before the board locks."
-          meta="The game is coming soon to the App Store."
+          meta="Available now on the App Store for iPhone and iPad. Requires iOS 26.0 or later."
         />
 
         <div className="mt-12 flex flex-wrap gap-3">
-          <a
-            href="mailto:support@ohanalabs.app?subject=Jade%20Run%20TestFlight"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-5 py-3 text-sm font-semibold text-abyss-950 transition hover:bg-tide-200 active:scale-[0.98]"
-          >
-            Join the TestFlight list <ArrowRight size={16} weight="bold" />
-          </a>
+          {appStoreUrl ? (
+            <a
+              href={appStoreUrl}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-tide-400 px-5 py-3 text-sm font-semibold text-abyss-950 transition hover:bg-tide-200 active:scale-[0.98]"
+            >
+              <AppStoreLogo size={17} weight="fill" />
+              Download on the App Store
+            </a>
+          ) : null}
           <a
             href="#charms"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-abyss-600 px-5 py-3 text-sm font-semibold text-sand-300 transition hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"

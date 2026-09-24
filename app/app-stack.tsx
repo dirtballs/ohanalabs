@@ -133,7 +133,7 @@ export function AppStack({ apps }: { apps: AppData[] }) {
                     href={app.detailHref ?? `/apps/${app.slug}`}
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-abyss-600 px-5 py-3 text-sm font-semibold text-sand-300 transition duration-200 hover:border-tide-600 hover:text-sand-100 active:scale-[0.98]"
                   >
-                    {app.appStoreUrl ? 'App details' : app.detailHref ? 'How to play' : 'Preview details'}
+                    {app.detailHref ? 'How to play' : app.appStoreUrl ? 'App details' : 'Preview details'}
                     <ArrowRight size={15} weight="bold" />
                   </Link>
                 </div>
