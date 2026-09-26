@@ -241,8 +241,8 @@ export default function JadeRunPage() {
           <p className="text-[0.625rem] font-semibold uppercase tracking-label text-tide-400">Daily and friend challenges</p>
           <h2 className="mt-4 max-w-xl text-3xl font-semibold tracking-heading text-sand-100 sm:text-4xl">Same board. Better bragging rights.</h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-sand-300">The daily board is one shared UTC board with one attempt. Friend challenges use a JR2 code so both players receive the same seed, shape, difficulty, target, and run type.</p>
-          <Link href="https://jade-run-challenges.dirtball.chatgpt.site" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-tide-200 transition hover:text-tide-200">
-            Open the challenge preview <ArrowRight size={16} weight="bold" />
+          <Link href="/jaderun/challenge" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-tide-200 transition hover:text-tide-200">
+            See what a challenge looks like <ArrowRight size={16} weight="bold" />
           </Link>
         </section>
 
