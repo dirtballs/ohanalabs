@@ -149,7 +149,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'Skylight 4.1 — cleaner Home, clearer hourly, Watch forecast pages that actually work. Ultra still $4.99 once. Conditions, radar, alerts, AQI, and guidance without the clutter.',
+      'Skylight 4.3 — tides on Home, tap any figure for a 24-hour chart, Lock Screen notification crash fix. Ultra still $4.99 once. Conditions, radar, alerts, AQI, and guidance without the clutter.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -166,11 +166,15 @@ export const appList: AppData[] = [
     },
     screenshotPaths: [
       '/apps/skylight/screenshot-1.webp',
+      '/apps/skylight/screenshot-tides.webp',
+      '/apps/skylight/screenshot-detail.webp',
       '/apps/skylight/screenshot-3.webp',
       '/apps/skylight/screenshot-4.webp',
     ],
     screenshotAlts: [
-      'Skylight Home — cleaner 4.1 layout and conditions',
+      'Skylight Home — conditions on the Home scroll',
+      'Skylight Tides — high and low water for the nearest station',
+      'Skylight Detail — tap a figure for a 24-hour chart',
       'Skylight Settings — severe weather, rain ahead, alert readiness',
       'Skylight Outlook — the days ahead',
     ],
@@ -179,7 +183,7 @@ export const appList: AppData[] = [
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
-      'Real iPad layout, plus Watch forecast pages and new complications in Skylight 4.1',
+      'Tides on Home, tap any figure for a 24-hour chart, and a Lock Screen notification crash fix in Skylight 4.3',
     ],
     featureSections: [
       {
@@ -530,7 +534,7 @@ export const appList: AppData[] = [
       {
         question: 'When is it available?',
         answer:
-          'The iPhone app is in TestFlight now and the Mac app is being finished for direct download. Email support@ohanalabs.app if you would like to try it early.',
+          'Sling is coming soon for iPhone and Mac. Email support@ohanalabs.app with subject “Sling — notify me” if you want a note when it’s ready.',
       },
     ],
     privacySections: [
@@ -567,13 +571,13 @@ export const appList: AppData[] = [
     category: 'Tile matching',
     headline: 'Same board. Better bragging rights.',
     shortDescription:
-      'Jade Run 1.0 — match deep, chain fast, draft charms. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra $4.99 once.',
+      'Jade Run 1.2 — standings after each board, depth-signature sharing, six languages, accessibility text sizes. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra $4.99 once.',
     longDescription:
       'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
     iconSrc: '/apps/jade-run-icon.png',
     iconAlt: 'Jade Run app icon',
     releaseStage: 'app-store',
-    availability: 'Available now on the App Store for iPhone and iPad. Requires iOS 26.0 or later.',
+    availability: 'Available now on the App Store for iPhone and iPad. Requires iOS 17.0 or later.',
     statusLabel: 'Live on the App Store',
     priceLabel: 'Free download. Ultra $4.99 once.',
     appStoreUrl: 'https://apps.apple.com/us/app/jade-run/id6802475679',
@@ -601,6 +605,7 @@ export const appList: AppData[] = [
       'Charm shelf that bends tempo, score, and finish bonuses',
       'Quick Run and Classic Run board ladders',
       'Daily shared board and friend challenges with JR2 codes',
+      'Standings, depth-signature sharing, six languages, and accessibility text sizes in Jade Run 1.2',
     ],
     featureSections: [
       {
@@ -624,7 +629,7 @@ export const appList: AppData[] = [
       {
         question: 'When is Jade Run available?',
         answer:
-          'Jade Run is live on the App Store for iPhone and iPad (iOS 26 or later). Free to download; Ultra is a one-time $4.99 unlock.',
+          'Jade Run is live on the App Store for iPhone and iPad (iOS 17 or later). Free to download; Ultra is a one-time $4.99 unlock.',
       },
       {
         question: 'Where are the rules?',

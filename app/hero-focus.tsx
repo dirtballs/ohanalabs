@@ -14,6 +14,7 @@ export type HeroApp = Pick<
   | 'name'
   | 'iconSrc'
   | 'iconAlt'
+  | 'releaseStage'
   | 'screenshotPaths'
   | 'screenshotAlts'
   | 'previewImageSrc'
@@ -143,7 +144,7 @@ function HeroPhones({ app }: { app: HeroApp }) {
         <PhoneShot
           shot={front}
           prominent
-          priority={app.slug === 'jade-run'}
+          priority={app.slug === 'steady'}
           sizes="(min-width: 1024px) 22vw, 48vw"
         />
       </div>
@@ -156,7 +157,7 @@ function HeroPhones({ app }: { app: HeroApp }) {
  *
  * Hover (mouse/pen) or keyboard focus-visible swaps phones and the CTA.
  * Click / tap on an icon goes to that app's page (detailHref or /apps/{slug}),
- * never a mailto. Leaving the strip keeps last focus — no snap-back to Jade.
+ * never a mailto. Leaving the strip keeps last focus — no snap-back to the default.
  */
 export function HeroFocus({
   apps,
@@ -228,16 +229,17 @@ export function HeroFocus({
         >
           {apps.map((app) => {
             const selected = app.slug === focused.slug;
+            const chip = app.releaseStage === 'app-store' ? 'Live' : 'Soon';
             return (
               <Link
                 key={app.slug}
                 href={heroPageHref(app)}
                 title={app.name}
-                aria-label={app.name}
+                aria-label={`${app.name}, ${chip}`}
                 aria-current={selected ? 'true' : undefined}
                 onPointerEnter={(event) => onIconPointerEnter(event, app.slug)}
                 onFocus={(event) => onIconFocus(event, app.slug)}
-                className={`flex shrink-0 flex-col items-center gap-2 rounded-container px-2.5 py-2 transition duration-200 ${
+                className={`flex shrink-0 flex-col items-center gap-1.5 rounded-container px-2 py-2 transition duration-200 ${
                   selected
                     ? 'bg-tide-400/10 ring-1 ring-tide-400/50'
                     : 'hover:bg-white/5'
@@ -250,6 +252,15 @@ export function HeroFocus({
                   height={44}
                   className="size-11 rounded-inner ring-1 ring-white/10"
                 />
+                <span
+                  className={`rounded-full px-1.5 py-px text-[0.5rem] font-semibold uppercase leading-none tracking-label ${
+                    chip === 'Live'
+                      ? 'border border-tide-400/40 bg-tide-400/10 text-tide-200'
+                      : 'border border-white/10 bg-white/5 text-sand-500'
+                  }`}
+                >
+                  {chip}
+                </span>
                 <span
                   className={`max-w-[4.75rem] truncate text-[0.6875rem] ${
                     selected ? 'text-tide-200' : 'text-sand-500'
