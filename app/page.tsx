@@ -32,6 +32,7 @@ function toHeroApp(app: AppData): HeroApp {
     name: app.name,
     iconSrc: app.iconSrc,
     iconAlt: app.iconAlt,
+    releaseStage: app.releaseStage,
     screenshotPaths: app.screenshotPaths,
     screenshotAlts: app.screenshotAlts,
     previewImageSrc: app.previewImageSrc,
@@ -57,7 +58,7 @@ export default function Home() {
       <SiteNav />
 
       <main id="main">
-        {/* 1. HERO. Icon strip focuses an app; Jade is the launch-week default. */}
+        {/* 1. HERO. Icon strip focuses an app; Steady is the default. */}
         <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-5 pb-12 pt-16 sm:px-8">
           <div className="caustics" aria-hidden="true" />
           <div
@@ -65,9 +66,9 @@ export default function Home() {
             aria-hidden="true"
           />
 
-          <HeroFocus apps={stackApps.map(toHeroApp)} defaultSlug="jade-run">
+          <HeroFocus apps={stackApps.map(toHeroApp)} defaultSlug="steady">
             <p className="inline-flex items-center rounded-full border border-tide-400/40 bg-tide-400/10 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-label text-tide-200">
-              Jade Run · live on the App Store · beat the daily · challenge friends
+              Three apps on the App Store
             </p>
 
             <h1 className="mt-7 text-[clamp(3.5rem,11vw,9rem)] font-semibold leading-[0.88] tracking-display">

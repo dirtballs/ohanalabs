@@ -77,7 +77,7 @@ export default function JadeRunPage() {
           eyebrow="Jade Run · live on the App Store"
           title="Match tiles. Build a run."
           lede="Jade Run is a tile matching game about reading the board, keeping a clean chain, and choosing the charm that changes the run. Clear every tile before the board locks."
-          meta="Available now on the App Store for iPhone and iPad. Requires iOS 26.0 or later."
+          meta="Available now on the App Store for iPhone and iPad. Requires iOS 17.0 or later."
         />
 
         <div className="mt-12 flex flex-wrap gap-3">
