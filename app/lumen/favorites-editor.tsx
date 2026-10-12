@@ -29,6 +29,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [search, setSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [touched, setTouched] = useState<Set<string>>(new Set());
+  const [saveFailed, setSaveFailed] = useState(false);
   const dirty = touched.size > 0;
 
   const markTouched = useCallback((key: string) => {
@@ -213,8 +214,10 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       // The app stores this sorted; match it so the two agree.
       if (touched.has(HIDDEN_KEY)) await saveList(db, HIDDEN_KEY, [...hidden].sort());
       setTouched(new Set());
-      setMessage('Saved. Your Apple TV will pick this up next time Lumen syncs.');
+      setSaveFailed(false);
+      setMessage('Saved and verified in iCloud. Your Apple TV will pick it up on next launch.');
     } catch (error) {
+      setSaveFailed(true);
       setMessage(error instanceof Error ? error.message : 'Could not save.');
     } finally {
       setSaving(false);
@@ -429,7 +432,17 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         </section>
       ) : null}
 
-      {message ? <p className="text-sm text-sand-500">{message}</p> : null}
+      {message ? (
+        <p
+          className={
+            saveFailed
+              ? 'rounded-xl border border-red-900/60 bg-red-950/40 p-4 text-sm text-red-200'
+              : 'text-sm text-sand-500'
+          }
+        >
+          {message}
+        </p>
+      ) : null}
       </>
       )}
     </div>

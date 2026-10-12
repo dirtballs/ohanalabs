@@ -166,6 +166,17 @@ export async function saveList(
       refused?.reason ?? refused?.serverErrorCode ?? 'iCloud rejected the change',
     );
   }
+
+  // Read it straight back. A save that reports success but stores nothing is exactly
+  // the failure that kept losing favourites, so do not trust the response alone.
+  const check = await loadList(db, key);
+  const expected = JSON.stringify(values);
+  if (JSON.stringify(check) !== expected) {
+    throw new Error(
+      `iCloud accepted the save but stored ${check.length} of ${values.length} items. ` +
+        `Saved record "${key}" came back as: ${JSON.stringify(check).slice(0, 120)}`,
+    );
+  }
 }
 
 export const loadFavorites = (db: CloudKitDatabase) => loadList(db, FAVORITES_KEY);
