@@ -114,33 +114,36 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     }
   }, [db, favorites]);
 
-  if (status === 'loading') {
-    return <p className="text-sm text-sand-500">Connecting to iCloud…</p>;
-  }
-
-  if (status === 'signed-out') {
-    return (
-      <div className="rounded-2xl border border-abyss-700 bg-abyss-900 p-6">
+  return (
+    <div className="space-y-8">
+      {/* Always mounted, only hidden. CloudKit JS injects its Apple-branded button into
+          this node during setUpAuth(), which runs on first render — so rendering the
+          node only once the status is 'signed-out' means it does not exist yet when
+          CloudKit looks for it, and no sign-in button ever appears. */}
+      <div
+        className={
+          status === 'signed-out' ? 'rounded-2xl border border-abyss-700 bg-abyss-900 p-6' : 'hidden'
+        }
+      >
         <p className="text-sm text-sand-300">
           Sign in with the same Apple Account you use on your Apple TV. Ohana Labs never sees your
           credentials or your channel list — the browser talks to iCloud directly.
         </p>
-        {/* CloudKit JS renders its own Apple-branded button into this element. */}
         <div id="apple-sign-in-button" className="mt-4" />
       </div>
-    );
-  }
 
-  if (status === 'error') {
-    return (
-      <div className="rounded-2xl border border-red-900/60 bg-red-950/30 p-6">
-        <p className="text-sm text-red-200">{message}</p>
-      </div>
-    );
-  }
+      {status === 'loading' ? (
+        <p className="text-sm text-sand-500">Connecting to iCloud…</p>
+      ) : null}
 
-  return (
-    <div className="space-y-8">
+      {status === 'error' ? (
+        <div className="rounded-2xl border border-red-900/60 bg-red-950/30 p-6">
+          <p className="text-sm text-red-200">{message}</p>
+        </div>
+      ) : null}
+
+      {status !== 'ready' ? null : (
+      <>
       <section>
         <div className="mb-3 flex items-baseline justify-between gap-4">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-sand-500">
@@ -236,6 +239,8 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       </section>
 
       {message ? <p className="text-sm text-sand-500">{message}</p> : null}
+      </>
+      )}
     </div>
   );
 }
