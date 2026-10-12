@@ -9,6 +9,8 @@
 
 export const CONTAINER = 'iCloud.com.nicholaslutz.lumen';
 export const FAVORITES_KEY = 'lumen.favorites';
+export const GROUP_ORDER_KEY = 'lumen.groupOrder';
+export const HIDDEN_KEY = 'lumen.hiddenIDs';
 
 type CloudKitRecord = {
   recordName: string;
@@ -113,10 +115,10 @@ export async function loadChannelIndex(db: CloudKitDatabase): Promise<Channel[]>
   return (await response.json()) as Channel[];
 }
 
-export async function loadFavorites(db: CloudKitDatabase): Promise<string[]> {
-  const result = await db.fetchRecords(FAVORITES_KEY);
-  const record = result.records?.[0];
-  const json = decodeBytes(record?.fields?.blob?.value);
+/** Every setting Lumen syncs is a JSON array or object in a Bytes field. */
+export async function loadList(db: CloudKitDatabase, key: string): Promise<string[]> {
+  const result = await db.fetchRecords(key);
+  const json = decodeBytes(result.records?.[0]?.fields?.blob?.value);
   if (!json) return [];
   try {
     const parsed = JSON.parse(json);
@@ -126,17 +128,25 @@ export async function loadFavorites(db: CloudKitDatabase): Promise<string[]> {
   }
 }
 
-/** Writes the ordered favorites back. The app reads this on its next sync. */
-export async function saveFavorites(db: CloudKitDatabase, ids: string[]): Promise<void> {
+/** Writes a list back. The app picks it up on its next sync. */
+export async function saveList(
+  db: CloudKitDatabase,
+  key: string,
+  values: string[],
+): Promise<void> {
   const response = await db.saveRecords({
     recordType: 'LumenSetting',
-    recordName: FAVORITES_KEY,
+    recordName: key,
     fields: {
-      key: { value: FAVORITES_KEY },
-      blob: { value: encodeBytes(JSON.stringify(ids)) },
+      key: { value: key },
+      blob: { value: encodeBytes(JSON.stringify(values)) },
     },
   });
   if (response.hasErrors) throw new Error('iCloud rejected the change');
 }
+
+export const loadFavorites = (db: CloudKitDatabase) => loadList(db, FAVORITES_KEY);
+export const saveFavorites = (db: CloudKitDatabase, ids: string[]) =>
+  saveList(db, FAVORITES_KEY, ids);
 
 export type { CloudKitContainer, CloudKitDatabase };
