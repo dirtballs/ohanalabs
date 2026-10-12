@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, Plus, X } from '@phosphor-icons/react';
+import { ArrowDown, ArrowUp, CaretDown, CaretRight, Heart, Plus, X } from '@phosphor-icons/react';
 import {
   cloudKit,
   loadChannelIndex,
@@ -17,6 +17,11 @@ import {
 
 type Status = 'loading' | 'signed-out' | 'ready' | 'error';
 
+/// Rows rendered when a category is expanded. Some provider categories run to a few
+/// thousand channels, which is slow to render and useless to scroll; the search box
+/// is the right tool past this point.
+const CHANNELS_PER_GROUP = 300;
+
 export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [status, setStatus] = useState<Status>('loading');
   const [message, setMessage] = useState<string | null>(null);
@@ -27,6 +32,9 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [hidden, setHidden] = useState<string[]>([]);
   const [providerGroups, setProviderGroups] = useState<string[]>([]);
   const [search, setSearch] = useState('');
+  /// The category whose channels are expanded. One at a time: a provider category can
+  /// hold several hundred channels and opening them all at once is unreadable.
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [saveFailed, setSaveFailed] = useState(false);
@@ -140,16 +148,26 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
 
   const hiddenSet = useMemo(() => new Set(hidden), [hidden]);
 
-  const idsByGroup = useMemo(() => {
-    const map = new Map<string, string[]>();
+  const channelsByGroup = useMemo(() => {
+    const map = new Map<string, Channel[]>();
     for (const channel of channels) {
       if (!channel.group) continue;
       const list = map.get(channel.group);
-      if (list) list.push(channel.id);
-      else map.set(channel.group, [channel.id]);
+      if (list) list.push(channel);
+      else map.set(channel.group, [channel]);
     }
     return map;
   }, [channels]);
+
+  const idsByGroup = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const [group, list] of channelsByGroup) {
+      map.set(group, list.map((c) => c.id));
+    }
+    return map;
+  }, [channelsByGroup]);
+
+  const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
 
   /// Matches the app: a category counts as hidden when every channel in it is.
   const isGroupHidden = useCallback(
@@ -158,6 +176,18 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       return !!ids?.length && ids.every((id) => hiddenSet.has(id));
     },
     [idsByGroup, hiddenSet],
+  );
+
+  const visibleGroupCount = useMemo(
+    () => groups.filter((g) => !isGroupHidden(g)).length,
+    [groups, isGroupHidden],
+  );
+
+  /// Hidden channels whose category is still showing — the ones worth listing, since a
+  /// fully hidden category is already represented by its own row.
+  const individuallyHidden = useMemo(
+    () => hidden.filter((id) => !isGroupHidden(byID.get(id)?.group ?? '')),
+    [hidden, byID, isGroupHidden],
   );
 
   const toggleGroupHidden = useCallback(
@@ -175,6 +205,18 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       markTouched(HIDDEN_KEY);
     },
     [idsByGroup, isGroupHidden, markTouched],
+  );
+
+  /// Hides or shows every channel in one go. Most people keep a handful of categories
+  /// and hide the rest, so starting from "all hidden" is far less clicking than the
+  /// other way round. The app has no notion of a hidden *category* — it stores hidden
+  /// channel identifiers — so this expands to every id in the published index.
+  const setAllHidden = useCallback(
+    (hide: boolean) => {
+      setHidden(hide ? channels.map((c) => c.id) : []);
+      markTouched(HIDDEN_KEY);
+    },
+    [channels, markTouched],
   );
 
   const moveGroup = useCallback(
@@ -358,60 +400,146 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-sand-500">
-          Category order
-        </h2>
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-sand-500">
+            Categories
+          </h2>
+          <span className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setAllHidden(true)}
+              className="rounded-lg border border-abyss-700 px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
+            >
+              Hide all
+            </button>
+            <button
+              type="button"
+              onClick={() => setAllHidden(false)}
+              className="rounded-lg border border-abyss-700 px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
+            >
+              Show all
+            </button>
+          </span>
+        </div>
         <p className="mb-3 text-sm text-sand-600">
-          The order categories appear in your guide.
+          {visibleGroupCount} of {groups.length} showing in your guide. Open one to add its
+          channels to your favorites; the arrows set the order it appears in.
         </p>
         <ol className="space-y-2">
-          {groups.map((group, index) => (
-            <li
-              key={group}
-              className="flex items-center gap-3 rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3"
-            >
-              <span className="w-6 shrink-0 text-right text-sm tabular-nums text-sand-500">
-                {index + 1}
-              </span>
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                <span className={isGroupHidden(group) ? 'text-sand-600 line-through' : 'text-sand-100'}>
-                  {group}
-                </span>
-                <span className="ml-2 text-xs text-sand-600">
-                  {idsByGroup.get(group)?.length ?? 0}
-                </span>
-              </span>
-              <span className="flex shrink-0 items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => toggleGroupHidden(group)}
-                  className="rounded-lg border border-abyss-700 px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
-                >
-                  {isGroupHidden(group) ? 'Show' : 'Hide'}
-                </button>
-                <IconButton label="Move up" onClick={() => moveGroup(index, -1)} disabled={index === 0}>
-                  <ArrowUp size={15} weight="bold" />
-                </IconButton>
-                <IconButton
-                  label="Move down"
-                  onClick={() => moveGroup(index, 1)}
-                  disabled={index === groups.length - 1}
-                >
-                  <ArrowDown size={15} weight="bold" />
-                </IconButton>
-              </span>
-            </li>
-          ))}
+          {groups.map((group, index) => {
+            const groupHidden = isGroupHidden(group);
+            const open = openGroup === group;
+            const inGroup = channelsByGroup.get(group) ?? [];
+            return (
+              <li key={group} className="rounded-xl border border-abyss-700 bg-abyss-900">
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <span className="w-6 shrink-0 text-right text-sm tabular-nums text-sand-500">
+                    {index + 1}
+                  </span>
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    onClick={() => setOpenGroup((current) => (current === group ? null : group))}
+                    className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                  >
+                    {open ? (
+                      <CaretDown size={13} weight="bold" className="shrink-0 text-sand-500" />
+                    ) : (
+                      <CaretRight size={13} weight="bold" className="shrink-0 text-sand-600" />
+                    )}
+                    <span className="min-w-0 truncate text-sm font-medium">
+                      <span className={groupHidden ? 'text-sand-600 line-through' : 'text-sand-100'}>
+                        {group}
+                      </span>
+                      <span className="ml-2 text-xs text-sand-600">{inGroup.length}</span>
+                    </span>
+                  </button>
+                  <span className="flex shrink-0 items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleGroupHidden(group)}
+                      className="rounded-lg border border-abyss-700 px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
+                    >
+                      {groupHidden ? 'Show' : 'Hide'}
+                    </button>
+                    <IconButton label="Move up" onClick={() => moveGroup(index, -1)} disabled={index === 0}>
+                      <ArrowUp size={15} weight="bold" />
+                    </IconButton>
+                    <IconButton
+                      label="Move down"
+                      onClick={() => moveGroup(index, 1)}
+                      disabled={index === groups.length - 1}
+                    >
+                      <ArrowDown size={15} weight="bold" />
+                    </IconButton>
+                  </span>
+                </div>
+
+                {open ? (
+                  <ul className="max-h-96 space-y-0.5 overflow-y-auto border-t border-abyss-700 px-3 py-2">
+                    {inGroup.slice(0, CHANNELS_PER_GROUP).map((channel) => {
+                      const favorite = favoriteSet.has(channel.id);
+                      const channelHidden = hiddenSet.has(channel.id);
+                      return (
+                        <li
+                          key={channel.id}
+                          className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-abyss-800"
+                        >
+                          <span
+                            className={
+                              channelHidden
+                                ? 'min-w-0 flex-1 truncate text-sm text-sand-600 line-through'
+                                : 'min-w-0 flex-1 truncate text-sm text-sand-300'
+                            }
+                          >
+                            {channel.name}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+                            onClick={() => (favorite ? remove(channel.id) : add(channel.id))}
+                            className={
+                              favorite
+                                ? 'shrink-0 rounded-lg border border-tide-500/60 p-1.5 text-tide-500 transition'
+                                : 'shrink-0 rounded-lg border border-abyss-700 p-1.5 text-sand-600 transition hover:text-sand-100'
+                            }
+                          >
+                            <Heart size={14} weight={favorite ? 'fill' : 'bold'} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => (channelHidden ? unhide(channel.id) : hide(channel.id))}
+                            className="shrink-0 rounded-lg border border-abyss-700 px-2 py-1 text-[11px] font-semibold text-sand-600 transition hover:text-sand-100"
+                          >
+                            {channelHidden ? 'Show' : 'Hide'}
+                          </button>
+                        </li>
+                      );
+                    })}
+                    {inGroup.length > CHANNELS_PER_GROUP ? (
+                      <li className="px-2 py-2 text-xs text-sand-600">
+                        {inGroup.length - CHANNELS_PER_GROUP} more in this category — use the
+                        search above to reach them.
+                      </li>
+                    ) : null}
+                  </ul>
+                ) : null}
+              </li>
+            );
+          })}
         </ol>
       </section>
 
-      {hidden.length > 0 ? (
+      {individuallyHidden.length > 0 ? (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-sand-500">
             Hidden channels
           </h2>
+          <p className="mb-3 text-sm text-sand-600">
+            Hidden on their own, inside a category that is otherwise showing.
+          </p>
           <ul className="space-y-2">
-            {hidden.filter((id) => !isGroupHidden(byID.get(id)?.group ?? '')).slice(0, 200).map((id) => (
+            {individuallyHidden.slice(0, 200).map((id) => (
               <li
                 key={id}
                 className="flex items-center gap-3 rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3"

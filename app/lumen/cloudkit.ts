@@ -149,12 +149,25 @@ export async function saveList(
     // No record yet; creating one needs no tag.
   }
 
+  const payload = JSON.stringify(values);
+  // A LumenSetting record is capped at 1 MB by CloudKit, and the channel list it
+  // holds identifiers from can run to tens of thousands of entries — so "hide
+  // everything" on a big provider can genuinely overflow it. Say so plainly
+  // instead of letting CloudKit refuse the save with a size error.
+  if (payload.length > 900_000) {
+    throw new Error(
+      `That is ${values.length.toLocaleString()} channels, which is larger than the ` +
+        `1 MB iCloud allows for one setting. Hide whole categories you do not want ` +
+        `rather than every channel individually.`,
+    );
+  }
+
   const record: Record<string, unknown> = {
     recordType: 'LumenSetting',
     recordName: key,
     fields: {
       key: { value: key },
-      blob: { value: encodeBytes(JSON.stringify(values)) },
+      blob: { value: encodeBytes(payload) },
     },
   };
   if (recordChangeTag) record.recordChangeTag = recordChangeTag;
@@ -170,8 +183,7 @@ export async function saveList(
   // Read it straight back. A save that reports success but stores nothing is exactly
   // the failure that kept losing favourites, so do not trust the response alone.
   const check = await loadList(db, key);
-  const expected = JSON.stringify(values);
-  if (JSON.stringify(check) !== expected) {
+  if (JSON.stringify(check) !== payload) {
     throw new Error(
       `iCloud accepted the save but stored ${check.length} of ${values.length} items. ` +
         `Saved record "${key}" came back as: ${JSON.stringify(check).slice(0, 120)}`,
