@@ -11,6 +11,7 @@ export const CONTAINER = 'iCloud.com.nicholaslutz.lumen';
 export const FAVORITES_KEY = 'lumen.favorites';
 export const GROUP_ORDER_KEY = 'lumen.groupOrder';
 export const HIDDEN_KEY = 'lumen.hiddenIDs';
+export const PROVIDER_GROUPS_KEY = 'lumen.providerGroups';
 
 type CloudKitRecord = {
   recordName: string;

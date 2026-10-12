@@ -10,6 +10,7 @@ import {
   FAVORITES_KEY,
   GROUP_ORDER_KEY,
   HIDDEN_KEY,
+  PROVIDER_GROUPS_KEY,
   type Channel,
   type CloudKitDatabase,
 } from './cloudkit';
@@ -24,6 +25,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [groupOrder, setGroupOrder] = useState<string[]>([]);
   const [hidden, setHidden] = useState<string[]>([]);
+  const [providerGroups, setProviderGroups] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [touched, setTouched] = useState<Set<string>>(new Set());
@@ -51,11 +53,12 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
           return;
         }
         const database = container.privateCloudDatabase;
-        const [index, favs, groups, hiddenIDs] = await Promise.all([
+        const [index, favs, groups, hiddenIDs, provider] = await Promise.all([
           loadChannelIndex(database),
           loadList(database, FAVORITES_KEY),
           loadList(database, GROUP_ORDER_KEY),
           loadList(database, HIDDEN_KEY),
+          loadList(database, PROVIDER_GROUPS_KEY),
         ]);
         if (cancelled) return;
         setDb(database);
@@ -63,6 +66,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         setFavorites(favs);
         setGroupOrder(groups);
         setHidden(hiddenIDs);
+        setProviderGroups(provider);
         setStatus('ready');
         if (index.length === 0) {
           setMessage('No channel list found yet. Open Lumen on your Apple TV once so it can publish one.');
@@ -116,20 +120,62 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     markTouched(FAVORITES_KEY);
   }, []);
 
-  /// Categories the provider actually sends, with any saved order applied first.
+  /// Categories in the order the app shows them: anything you have explicitly
+  /// reordered first, then the provider's own declared order, then anything left.
   const groups = useMemo(() => {
-    const present: string[] = [];
+    const appearance: string[] = [];
     const seen = new Set<string>();
     for (const channel of channels) {
       if (!channel.group || seen.has(channel.group)) continue;
       seen.add(channel.group);
-      present.push(channel.group);
+      appearance.push(channel.group);
     }
-    const known = new Set(present);
-    const ordered = groupOrder.filter((g) => known.has(g));
-    const rest = present.filter((g) => !ordered.includes(g));
-    return [...ordered, ...rest];
-  }, [channels, groupOrder]);
+    const fromProvider = providerGroups.filter((g) => seen.has(g));
+    const providerSet = new Set(fromProvider);
+    const base = [...fromProvider, ...appearance.filter((g) => !providerSet.has(g))];
+    const pinned = groupOrder.filter((g) => seen.has(g));
+    const pinnedSet = new Set(pinned);
+    return [...pinned, ...base.filter((g) => !pinnedSet.has(g))];
+  }, [channels, groupOrder, providerGroups]);
+
+  const hiddenSet = useMemo(() => new Set(hidden), [hidden]);
+
+  const idsByGroup = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const channel of channels) {
+      if (!channel.group) continue;
+      const list = map.get(channel.group);
+      if (list) list.push(channel.id);
+      else map.set(channel.group, [channel.id]);
+    }
+    return map;
+  }, [channels]);
+
+  /// Matches the app: a category counts as hidden when every channel in it is.
+  const isGroupHidden = useCallback(
+    (group: string) => {
+      const ids = idsByGroup.get(group);
+      return !!ids?.length && ids.every((id) => hiddenSet.has(id));
+    },
+    [idsByGroup, hiddenSet],
+  );
+
+  const toggleGroupHidden = useCallback(
+    (group: string) => {
+      const ids = idsByGroup.get(group) ?? [];
+      const hide = !isGroupHidden(group);
+      setHidden((current) => {
+        const next = new Set(current);
+        for (const id of ids) {
+          if (hide) next.add(id);
+          else next.delete(id);
+        }
+        return [...next];
+      });
+      markTouched(HIDDEN_KEY);
+    },
+    [idsByGroup, isGroupHidden, markTouched],
+  );
 
   const moveGroup = useCallback(
     (index: number, delta: number) => {
@@ -326,10 +372,22 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
               <span className="w-6 shrink-0 text-right text-sm tabular-nums text-sand-500">
                 {index + 1}
               </span>
-              <span className="min-w-0 flex-1 truncate text-sm font-medium text-sand-100">
-                {group}
+              <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                <span className={isGroupHidden(group) ? 'text-sand-600 line-through' : 'text-sand-100'}>
+                  {group}
+                </span>
+                <span className="ml-2 text-xs text-sand-600">
+                  {idsByGroup.get(group)?.length ?? 0}
+                </span>
               </span>
               <span className="flex shrink-0 items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => toggleGroupHidden(group)}
+                  className="rounded-lg border border-abyss-700 px-3 py-1.5 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
+                >
+                  {isGroupHidden(group) ? 'Show' : 'Hide'}
+                </button>
                 <IconButton label="Move up" onClick={() => moveGroup(index, -1)} disabled={index === 0}>
                   <ArrowUp size={15} weight="bold" />
                 </IconButton>
@@ -352,7 +410,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
             Hidden channels
           </h2>
           <ul className="space-y-2">
-            {hidden.map((id) => (
+            {hidden.filter((id) => !isGroupHidden(byID.get(id)?.group ?? '')).slice(0, 200).map((id) => (
               <li
                 key={id}
                 className="flex items-center gap-3 rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3"
