@@ -71,9 +71,11 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     const term = search.trim().toLowerCase();
     if (!term) return [];
     const chosen = new Set(favorites);
+    // A provider can carry dozens of variants of one brand; eight was hiding most of
+    // them with no indication there was more.
     return channels
       .filter((c) => !chosen.has(c.id) && c.name.toLowerCase().includes(term))
-      .slice(0, 8);
+      .slice(0, 60);
   }, [search, channels, favorites]);
 
   const move = useCallback((index: number, delta: number) => {
@@ -216,7 +218,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
           className="w-full rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3 text-sm text-sand-100 outline-none placeholder:text-sand-600 focus:border-tide-500"
         />
         {results.length > 0 ? (
-          <ul className="mt-2 space-y-2">
+          <ul className="mt-2 max-h-[32rem] space-y-2 overflow-y-auto pr-1">
             {results.map((channel) => (
               <li key={channel.id}>
                 <button
