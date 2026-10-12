@@ -26,7 +26,12 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [hidden, setHidden] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
+  const [touched, setTouched] = useState<Set<string>>(new Set());
+  const dirty = touched.size > 0;
+
+  const markTouched = useCallback((key: string) => {
+    setTouched((current) => (current.has(key) ? current : new Set(current).add(key)));
+  }, []);
 
   useEffect(() => {
     if (!apiToken) {
@@ -97,18 +102,18 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       next.splice(target, 0, item);
       return next;
     });
-    setDirty(true);
+    markTouched(FAVORITES_KEY);
   }, []);
 
   const remove = useCallback((id: string) => {
     setFavorites((current) => current.filter((f) => f !== id));
-    setDirty(true);
+    markTouched(FAVORITES_KEY);
   }, []);
 
   const add = useCallback((id: string) => {
     setFavorites((current) => (current.includes(id) ? current : [...current, id]));
     setSearch('');
-    setDirty(true);
+    markTouched(FAVORITES_KEY);
   }, []);
 
   /// Categories the provider actually sends, with any saved order applied first.
@@ -116,7 +121,9 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     const present: string[] = [];
     const seen = new Set<string>();
     for (const channel of channels) {
-      if (channel.group && seen.add(channel.group)) present.push(channel.group);
+      if (!channel.group || seen.has(channel.group)) continue;
+      seen.add(channel.group);
+      present.push(channel.group);
     }
     const known = new Set(present);
     const ordered = groupOrder.filter((g) => known.has(g));
@@ -134,39 +141,41 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         next.splice(target, 0, item);
         return next;
       });
-      setDirty(true);
+      markTouched(GROUP_ORDER_KEY);
     },
     [groups],
   );
 
   const unhide = useCallback((id: string) => {
     setHidden((current) => current.filter((h) => h !== id));
-    setDirty(true);
-  }, []);
+    markTouched(HIDDEN_KEY);
+  }, [markTouched]);
 
   const hide = useCallback((id: string) => {
     setHidden((current) => (current.includes(id) ? current : [...current, id]));
     setSearch('');
-    setDirty(true);
-  }, []);
+    markTouched(HIDDEN_KEY);
+  }, [markTouched]);
 
   const save = useCallback(async () => {
     if (!db) return;
     setSaving(true);
     setMessage(null);
     try {
-      await saveList(db, FAVORITES_KEY, favorites);
-      await saveList(db, GROUP_ORDER_KEY, groups);
+      // Only what was actually edited. Writing all three unconditionally meant a list
+      // that failed to load came back as empty and overwrote good data.
+      if (touched.has(FAVORITES_KEY)) await saveList(db, FAVORITES_KEY, favorites);
+      if (touched.has(GROUP_ORDER_KEY)) await saveList(db, GROUP_ORDER_KEY, groups);
       // The app stores this sorted; match it so the two agree.
-      await saveList(db, HIDDEN_KEY, [...hidden].sort());
-      setDirty(false);
+      if (touched.has(HIDDEN_KEY)) await saveList(db, HIDDEN_KEY, [...hidden].sort());
+      setTouched(new Set());
       setMessage('Saved. Your Apple TV will pick this up next time Lumen syncs.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not save.');
     } finally {
       setSaving(false);
     }
-  }, [db, favorites, groups, hidden]);
+  }, [db, favorites, groups, hidden, touched]);
 
   return (
     <div className="space-y-8">
