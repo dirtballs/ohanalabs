@@ -116,9 +116,8 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
 
   const add = useCallback((id: string) => {
     setFavorites((current) => (current.includes(id) ? current : [...current, id]));
-    setSearch('');
     markTouched(FAVORITES_KEY);
-  }, []);
+  }, [markTouched]);
 
   /// Categories in the order the app shows them: anything you have explicitly
   /// reordered first, then the provider's own declared order, then anything left.
@@ -199,7 +198,6 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
 
   const hide = useCallback((id: string) => {
     setHidden((current) => (current.includes(id) ? current : [...current, id]));
-    setSearch('');
     markTouched(HIDDEN_KEY);
   }, [markTouched]);
 
