@@ -17,6 +17,9 @@ type CloudKitRecord = {
   recordName: string;
   recordChangeTag?: string;
   fields: Record<string, { value: unknown }>;
+  // Present on the entries CloudKit returns for records it refused.
+  serverErrorCode?: string;
+  reason?: string;
 };
 
 type CloudKitDatabase = {
@@ -135,15 +138,34 @@ export async function saveList(
   key: string,
   values: string[],
 ): Promise<void> {
-  const response = await db.saveRecords({
+  // Updating an existing record requires its change tag. Without one CloudKit rejects
+  // the save as a conflict — and reports that per record rather than on the response,
+  // so the old check saw success while nothing was written.
+  let recordChangeTag: string | undefined;
+  try {
+    const existing = await db.fetchRecords(key);
+    recordChangeTag = existing.records?.[0]?.recordChangeTag;
+  } catch {
+    // No record yet; creating one needs no tag.
+  }
+
+  const record: Record<string, unknown> = {
     recordType: 'LumenSetting',
     recordName: key,
     fields: {
       key: { value: key },
       blob: { value: encodeBytes(JSON.stringify(values)) },
     },
-  });
-  if (response.hasErrors) throw new Error('iCloud rejected the change');
+  };
+  if (recordChangeTag) record.recordChangeTag = recordChangeTag;
+
+  const response = await db.saveRecords(record);
+  const refused = (response.records ?? []).find((r) => r.serverErrorCode || r.reason);
+  if (response.hasErrors || refused) {
+    throw new Error(
+      refused?.reason ?? refused?.serverErrorCode ?? 'iCloud rejected the change',
+    );
+  }
 }
 
 export const loadFavorites = (db: CloudKitDatabase) => loadList(db, FAVORITES_KEY);
