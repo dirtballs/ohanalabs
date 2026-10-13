@@ -1,12 +1,15 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, CaretDown, CaretRight, Heart, Plus, X } from '@phosphor-icons/react';
+import { ArrowDown, ArrowUp, CaretDown, CaretRight, Heart, Pencil, Plus, X } from '@phosphor-icons/react';
 import {
   cloudKit,
   loadChannelIndex,
   loadList,
+  loadMap,
   saveList,
+  saveMap,
+  CHANNEL_NAMES_KEY,
   FAVORITES_KEY,
   GROUP_ORDER_KEY,
   HIDDEN_KEY,
@@ -31,6 +34,10 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [groupOrder, setGroupOrder] = useState<string[]>([]);
   const [hidden, setHidden] = useState<string[]>([]);
   const [providerGroups, setProviderGroups] = useState<string[]>([]);
+  /// Channel id to the name the app should show instead of the provider's.
+  const [names, setNames] = useState<Record<string, string>>({});
+  const [editingName, setEditingName] = useState<string | null>(null);
+  const [draftName, setDraftName] = useState('');
   const [search, setSearch] = useState('');
   /// The category whose channels are expanded. One at a time: a provider category can
   /// hold several hundred channels and opening them all at once is unreadable.
@@ -62,12 +69,13 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
           return;
         }
         const database = container.privateCloudDatabase;
-        const [index, favs, groups, hiddenIDs, provider] = await Promise.all([
+        const [index, favs, groups, hiddenIDs, provider, renames] = await Promise.all([
           loadChannelIndex(database),
           loadList(database, FAVORITES_KEY),
           loadList(database, GROUP_ORDER_KEY),
           loadList(database, HIDDEN_KEY),
           loadList(database, PROVIDER_GROUPS_KEY),
+          loadMap(database, CHANNEL_NAMES_KEY),
         ]);
         if (cancelled) return;
         setDb(database);
@@ -76,6 +84,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         setGroupOrder(groups);
         setHidden(hiddenIDs);
         setProviderGroups(provider);
+        setNames(renames);
         setStatus('ready');
         if (index.length === 0) {
           setMessage('No channel list found yet. Open Lumen on your Apple TV once so it can publish one.');
@@ -93,6 +102,36 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   }, [apiToken]);
 
   const byID = useMemo(() => new Map(channels.map((c) => [c.id, c])), [channels]);
+
+  const displayName = useCallback(
+    (id: string) => names[id] ?? byID.get(id)?.name ?? 'Channel no longer in your playlist',
+    [names, byID],
+  );
+
+  const startRename = useCallback(
+    (id: string) => {
+      setEditingName(id);
+      setDraftName(displayName(id));
+    },
+    [displayName],
+  );
+
+  /// An empty box means "use the provider's name again", which is why the override is
+  /// deleted rather than stored as a blank. The app reads it the same way.
+  const commitRename = useCallback(
+    (id: string) => {
+      const next = draftName.trim();
+      setNames((current) => {
+        const copy = { ...current };
+        if (next && next !== byID.get(id)?.name) copy[id] = next;
+        else delete copy[id];
+        return copy;
+      });
+      markTouched(CHANNEL_NAMES_KEY);
+      setEditingName(null);
+    },
+    [draftName, byID, markTouched],
+  );
 
   const results = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -255,6 +294,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       if (touched.has(GROUP_ORDER_KEY)) await saveList(db, GROUP_ORDER_KEY, groups);
       // The app stores this sorted; match it so the two agree.
       if (touched.has(HIDDEN_KEY)) await saveList(db, HIDDEN_KEY, [...hidden].sort());
+      if (touched.has(CHANNEL_NAMES_KEY)) await saveMap(db, CHANNEL_NAMES_KEY, names);
       setTouched(new Set());
       setSaveFailed(false);
       setMessage('Saved and verified in iCloud. Your Apple TV will pick it up on next launch.');
@@ -264,7 +304,35 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     } finally {
       setSaving(false);
     }
-  }, [db, favorites, groups, hidden, touched]);
+  }, [db, favorites, groups, hidden, names, touched]);
+
+  /// Shown in the favourites list and inside an expanded category. One row is edited
+  /// at a time, so the draft lives in the component rather than per row.
+  const nameField = (id: string, tone: string) =>
+    editingName === id ? (
+      <span className="flex min-w-0 flex-1 items-center gap-2">
+        <input
+          autoFocus
+          value={draftName}
+          onChange={(event) => setDraftName(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') commitRename(id);
+            if (event.key === 'Escape') setEditingName(null);
+          }}
+          placeholder={byID.get(id)?.name ?? 'Channel name'}
+          className="min-w-0 flex-1 rounded-lg border border-tide-500/60 bg-abyss-950 px-2 py-1 text-sm text-sand-100 outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => commitRename(id)}
+          className="shrink-0 rounded-lg bg-sand-100 px-2 py-1 text-xs font-semibold text-abyss-950"
+        >
+          Set
+        </button>
+      </span>
+    ) : (
+      <span className={`min-w-0 flex-1 truncate ${tone}`}>{displayName(id)}</span>
+    );
 
   return (
     <div className="space-y-8">
@@ -327,15 +395,24 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                   <span className="w-6 shrink-0 text-right text-sm tabular-nums text-sand-500">
                     {index + 1}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-sand-100">
-                      {channel?.name ?? 'Channel no longer in your playlist'}
-                    </span>
-                    {channel?.group ? (
-                      <span className="block truncate text-xs text-sand-500">{channel.group}</span>
-                    ) : null}
+                  <span className="flex min-w-0 flex-1 items-center">
+                    {editingName === id ? (
+                      nameField(id, '')
+                    ) : (
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium text-sand-100">
+                          {displayName(id)}
+                        </span>
+                        {channel?.group ? (
+                          <span className="block truncate text-xs text-sand-500">{channel.group}</span>
+                        ) : null}
+                      </span>
+                    )}
                   </span>
                   <span className="flex shrink-0 items-center gap-1">
+                    <IconButton label="Rename" onClick={() => startRename(id)}>
+                      <Pencil size={15} weight="bold" />
+                    </IconButton>
                     <IconButton label="Move up" onClick={() => move(index, -1)} disabled={index === 0}>
                       <ArrowUp size={15} weight="bold" />
                     </IconButton>
@@ -423,7 +500,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         </div>
         <p className="mb-3 text-sm text-sand-600">
           {visibleGroupCount} of {groups.length} showing in your guide. Open one to add its
-          channels to your favorites; the arrows set the order it appears in.
+          channels to your favorites or rename them; the arrows set the order it appears in.
         </p>
         <ol className="space-y-2">
           {groups.map((group, index) => {
@@ -485,15 +562,18 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                           key={channel.id}
                           className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-abyss-800"
                         >
-                          <span
-                            className={
-                              channelHidden
-                                ? 'min-w-0 flex-1 truncate text-sm text-sand-600 line-through'
-                                : 'min-w-0 flex-1 truncate text-sm text-sand-300'
-                            }
+                          {nameField(
+                            channel.id,
+                            channelHidden ? 'text-sm text-sand-600 line-through' : 'text-sm text-sand-300',
+                          )}
+                          <button
+                            type="button"
+                            aria-label="Rename"
+                            onClick={() => startRename(channel.id)}
+                            className="shrink-0 rounded-lg border border-abyss-700 p-1.5 text-sand-600 transition hover:text-sand-100"
                           >
-                            {channel.name}
-                          </span>
+                            <Pencil size={14} weight="bold" />
+                          </button>
                           <button
                             type="button"
                             aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -545,7 +625,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                 className="flex items-center gap-3 rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3"
               >
                 <span className="min-w-0 flex-1 truncate text-sm text-sand-300">
-                  {byID.get(id)?.name ?? id}
+                  {displayName(id)}
                 </span>
                 <button
                   type="button"

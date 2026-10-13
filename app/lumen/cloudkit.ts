@@ -12,6 +12,7 @@ export const FAVORITES_KEY = 'lumen.favorites';
 export const GROUP_ORDER_KEY = 'lumen.groupOrder';
 export const HIDDEN_KEY = 'lumen.hiddenIDs';
 export const PROVIDER_GROUPS_KEY = 'lumen.providerGroups';
+export const CHANNEL_NAMES_KEY = 'lumen.channelNames';
 
 type CloudKitRecord = {
   recordName: string;
@@ -132,11 +133,46 @@ export async function loadList(db: CloudKitDatabase, key: string): Promise<strin
   }
 }
 
+/** The rename table: channel id to the name the app should show instead. */
+export async function loadMap(
+  db: CloudKitDatabase,
+  key: string,
+): Promise<Record<string, string>> {
+  const result = await db.fetchRecords(key);
+  const json = decodeBytes(result.records?.[0]?.fields?.blob?.value);
+  if (!json) return {};
+  try {
+    const parsed = JSON.parse(json);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? (parsed as Record<string, string>)
+      : {};
+  } catch {
+    return {};
+  }
+}
+
+export async function saveMap(
+  db: CloudKitDatabase,
+  key: string,
+  value: Record<string, string>,
+): Promise<void> {
+  await saveJSON(db, key, value, async () => loadMap(db, key));
+}
+
 /** Writes a list back. The app picks it up on its next sync. */
 export async function saveList(
   db: CloudKitDatabase,
   key: string,
   values: string[],
+): Promise<void> {
+  await saveJSON(db, key, values, async () => loadList(db, key));
+}
+
+async function saveJSON(
+  db: CloudKitDatabase,
+  key: string,
+  values: unknown,
+  readBack: () => Promise<unknown>,
 ): Promise<void> {
   // Updating an existing record requires its change tag. Without one CloudKit rejects
   // the save as a conflict — and reports that per record rather than on the response,
@@ -150,13 +186,14 @@ export async function saveList(
   }
 
   const payload = JSON.stringify(values);
+  const count = Array.isArray(values) ? values.length : Object.keys(values as object).length;
   // A LumenSetting record is capped at 1 MB by CloudKit, and the channel list it
   // holds identifiers from can run to tens of thousands of entries — so "hide
   // everything" on a big provider can genuinely overflow it. Say so plainly
   // instead of letting CloudKit refuse the save with a size error.
   if (payload.length > 900_000) {
     throw new Error(
-      `That is ${values.length.toLocaleString()} channels, which is larger than the ` +
+      `That is ${count.toLocaleString()} channels, which is larger than the ` +
         `1 MB iCloud allows for one setting. Hide whole categories you do not want ` +
         `rather than every channel individually.`,
     );
@@ -182,10 +219,13 @@ export async function saveList(
 
   // Read it straight back. A save that reports success but stores nothing is exactly
   // the failure that kept losing favourites, so do not trust the response alone.
-  const check = await loadList(db, key);
+  const check = await readBack();
   if (JSON.stringify(check) !== payload) {
+    const stored = Array.isArray(check)
+      ? check.length
+      : Object.keys((check ?? {}) as object).length;
     throw new Error(
-      `iCloud accepted the save but stored ${check.length} of ${values.length} items. ` +
+      `iCloud accepted the save but stored ${stored} of ${count} items. ` +
         `Saved record "${key}" came back as: ${JSON.stringify(check).slice(0, 120)}`,
     );
   }
