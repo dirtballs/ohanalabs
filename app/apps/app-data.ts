@@ -11,6 +11,8 @@ export type AppData = {
   availability: string;
   statusLabel: string;
   priceLabel: string;
+  /** Paid unlock shown under live app cards on the homepage. */
+  unlockPrice?: string;
   appStoreUrl?: string;
   primaryLink?: {
     label: string;
@@ -37,6 +39,11 @@ export type AppData = {
   }>;
 };
 
+const STEADY_PREMIUM = '$4.99';
+const STEADY_LIFETIME = '$99.99';
+const SKYLIGHT_ULTRA = '$19.99';
+const JADE_ULTRA = '$4.99';
+
 export const appList: AppData[] = [
   {
     slug: 'steady',
@@ -44,7 +51,7 @@ export const appList: AppData[] = [
     category: 'GLP-1 tracking',
     headline: 'Today, doses, weight, and the journey — one GLP-1 home.',
     shortDescription:
-      'Steady 4.0 — Today board, Dose Chapters, lean-mass habits, ocean-blue redesign. See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
+      'Steady 4.1: no ads on any plan, ten free AI meal scans a month, and titration plans for every major GLP-1. See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
     longDescription:
       'Steady helps people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications stay organized with reminders, trends, exports, and day-to-day health context.',
     iconSrc: '/apps/steady-icon.png',
@@ -52,7 +59,9 @@ export const appList: AppData[] = [
     releaseStage: 'app-store',
     availability: 'Available now on the App Store for iPhone. Requires iOS 17.0 or later.',
     statusLabel: 'Live on the App Store',
-    priceLabel: 'Free download. Steady Premium $4.99, or Lifetime $99.99.',
+    priceLabel:
+      'Free download, no ads. Tracking is free and works without an account. Premium adds unlimited meal scans, cloud backup, multi-device sync, and the web app.',
+    unlockPrice: `Premium ${STEADY_PREMIUM} · Lifetime ${STEADY_LIFETIME}`,
     appStoreUrl: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
     primaryLink: {
       label: 'Download on the App Store',
@@ -75,7 +84,8 @@ export const appList: AppData[] = [
       'SteadyShot Live Activity on Dynamic Island and Lock Screen',
       'Multi-therapy roles (Primary / Ramping / Weaning) plus taper plans',
       'Provider-ready PDF export + Apple Health sync',
-      'Dose Chapters, lean-mass habits, and an ocean-blue redesign in Steady 4.0',
+      'No ads on any plan, and ten free AI meal scans a month (Steady 4.1).',
+      'Titration plans for Ozempic, Wegovy, Mounjaro, Zepbound, Rybelsus, Wegovy Pill, compounded semaglutide and tirzepatide, and retatrutide.',
     ],
     featureSections: [
       {
@@ -149,7 +159,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'Skylight 4.3 — tides on Home, tap any figure for a 24-hour chart, Lock Screen notification crash fix. Ultra still $4.99 once. Conditions, radar, alerts, AQI, and guidance without the clutter.',
+      `Skylight 4.5: no false low reading when pollen or fine-particle data is missing, the snow card shows up, grades and charts follow your units, and saved-city time zones are fixed. Ultra ${SKYLIGHT_ULTRA} once. Conditions, radar, alerts, AQI, and guidance without the clutter.`,
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -158,7 +168,8 @@ export const appList: AppData[] = [
     availability:
       'Available now on the App Store for iPhone, iPad, and Apple Watch. Requires iOS 17.0, iPadOS 17.0, or watchOS 10.0 or later.',
     statusLabel: 'Live on the App Store',
-    priceLabel: '$4.99 one-time unlock for Skylight Ultra',
+    priceLabel: `${SKYLIGHT_ULTRA} one-time unlock for Skylight Ultra`,
+    unlockPrice: `Ultra ${SKYLIGHT_ULTRA} once`,
     appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
     primaryLink: {
       label: 'Download on the App Store',
@@ -183,7 +194,7 @@ export const appList: AppData[] = [
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
-      'Tides on Home, tap any figure for a 24-hour chart, and a Lock Screen notification crash fix in Skylight 4.3',
+      'Skylight 4.5 fixes pollen and fine-particle readings, the snow card, unit-aware grades and charts, saved-city time zones, and Ultra widget pins for saved cities',
     ],
     featureSections: [
       {
@@ -220,7 +231,7 @@ export const appList: AppData[] = [
       {
         question: 'Is Skylight a subscription?',
         answer:
-          'No. Skylight Ultra is a one-time $4.99 unlock, not a subscription.',
+          `No. Skylight Ultra is a one-time ${SKYLIGHT_ULTRA} unlock, not a subscription.`,
       },
       {
         question: 'Does Skylight track me?',
@@ -571,7 +582,7 @@ export const appList: AppData[] = [
     category: 'Tile matching',
     headline: 'Same board. Better bragging rights.',
     shortDescription:
-      'Jade Run 1.2 — standings after each board, depth-signature sharing, six languages, accessibility text sizes. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra $4.99 once.',
+      `Jade Run 1.2 — standings after each board, depth-signature sharing, six languages, accessibility text sizes. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra ${JADE_ULTRA} once.`,
     longDescription:
       'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
     iconSrc: '/apps/jade-run-icon.png',
@@ -579,7 +590,8 @@ export const appList: AppData[] = [
     releaseStage: 'app-store',
     availability: 'Available now on the App Store for iPhone and iPad. Requires iOS 17.0 or later.',
     statusLabel: 'Live on the App Store',
-    priceLabel: 'Free download. Ultra $4.99 once.',
+    priceLabel: `Free download. Ultra ${JADE_ULTRA} once.`,
+    unlockPrice: `Ultra ${JADE_ULTRA} once`,
     appStoreUrl: 'https://apps.apple.com/us/app/jade-run/id6802475679',
     primaryLink: {
       label: 'Download on the App Store',
@@ -629,7 +641,7 @@ export const appList: AppData[] = [
       {
         question: 'When is Jade Run available?',
         answer:
-          'Jade Run is live on the App Store for iPhone and iPad (iOS 17 or later). Free to download; Ultra is a one-time $4.99 unlock.',
+          `Jade Run is live on the App Store for iPhone and iPad (iOS 17 or later). Free to download; Ultra is a one-time ${JADE_ULTRA} unlock.`,
       },
       {
         question: 'Where are the rules?',
