@@ -112,6 +112,10 @@ export function AppStack({ apps }: { apps: AppData[] }) {
 
                 <p className="mt-5 max-w-[44ch] leading-7 text-sand-500">{app.shortDescription}</p>
 
+                {app.releaseStage === 'app-store' && app.unlockPrice ? (
+                  <p className="mt-3 text-xs font-medium tracking-wide text-sand-600">{app.unlockPrice}</p>
+                ) : null}
+
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                   {app.appStoreUrl ? (
                     <a
