@@ -159,7 +159,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      `Skylight 4.5: no false low reading when pollen or fine-particle data is missing, the snow card shows up, grades and charts follow your units, and saved-city time zones are fixed. Ultra ${SKYLIGHT_ULTRA} once. Conditions, radar, alerts, AQI, and guidance without the clutter.`,
+      `Skylight 4.5: no false low reading when pollen or fine-particle data is missing, the snow card shows up, grades and charts follow your units, and saved-city time zones are fixed. Conditions, radar, alerts, AQI, and guidance without the clutter.`,
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -582,7 +582,7 @@ export const appList: AppData[] = [
     category: 'Tile matching',
     headline: 'Same board. Better bragging rights.',
     shortDescription:
-      `Jade Run 1.2 — standings after each board, depth-signature sharing, six languages, accessibility text sizes. Shared daily board, Quick or Classic runs, JR2 friend challenges. Ultra ${JADE_ULTRA} once.`,
+      `Jade Run 1.2 — standings after each board, depth-signature sharing, six languages, accessibility text sizes. Shared daily board, Quick or Classic runs, JR2 friend challenges.`,
     longDescription:
       'Jade Run is a tile matching game from Ohana Labs. Match free tiles, keep a combo chain, and draft charms that bend scoring, tempo, and finish bonuses. Classic and Quick runs, a daily shared board, and friend challenges with JR2 codes.',
     iconSrc: '/apps/jade-run-icon.png',
