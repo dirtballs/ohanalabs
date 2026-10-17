@@ -1,7 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, CaretDown, CaretRight, Heart, Pencil, Plus, X } from '@phosphor-icons/react';
+import {
+  ArrowDown,
+  ArrowUp,
+  CaretDown,
+  CaretRight,
+  Heart,
+  Image as ImageIcon,
+  Pencil,
+  Plus,
+  X,
+} from '@phosphor-icons/react';
 import {
   cloudKit,
   loadChannelIndex,
@@ -9,6 +19,7 @@ import {
   loadMap,
   saveList,
   saveMap,
+  CHANNEL_ICONS_KEY,
   CHANNEL_NAMES_KEY,
   FAVORITES_KEY,
   GROUP_ORDER_KEY,
@@ -38,6 +49,11 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
   const [names, setNames] = useState<Record<string, string>>({});
   const [editingName, setEditingName] = useState<string | null>(null);
   const [draftName, setDraftName] = useState('');
+  /// Channel id to a logo URL that replaces the one the provider or guide supplies.
+  const [icons, setIcons] = useState<Record<string, string>>({});
+  const [editingIcon, setEditingIcon] = useState<string | null>(null);
+  const [draftIcon, setDraftIcon] = useState('');
+  const [iconError, setIconError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   /// The category whose channels are expanded. One at a time: a provider category can
   /// hold several hundred channels and opening them all at once is unreadable.
@@ -69,13 +85,14 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
           return;
         }
         const database = container.privateCloudDatabase;
-        const [index, favs, groups, hiddenIDs, provider, renames] = await Promise.all([
+        const [index, favs, groups, hiddenIDs, provider, renames, customIcons] = await Promise.all([
           loadChannelIndex(database),
           loadList(database, FAVORITES_KEY),
           loadList(database, GROUP_ORDER_KEY),
           loadList(database, HIDDEN_KEY),
           loadList(database, PROVIDER_GROUPS_KEY),
           loadMap(database, CHANNEL_NAMES_KEY),
+          loadMap(database, CHANNEL_ICONS_KEY),
         ]);
         if (cancelled) return;
         setDb(database);
@@ -85,6 +102,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         setHidden(hiddenIDs);
         setProviderGroups(provider);
         setNames(renames);
+        setIcons(customIcons);
         setStatus('ready');
         if (index.length === 0) {
           setMessage('No channel list found yet. Open Lumen on your Apple TV once so it can publish one.');
@@ -110,10 +128,50 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
 
   const startRename = useCallback(
     (id: string) => {
+      setEditingIcon(null);
       setEditingName(id);
       setDraftName(displayName(id));
     },
     [displayName],
+  );
+
+  /// The logo the app will draw: your replacement when one is set, otherwise the one
+  /// the provider or guide supplied in the published channel list.
+  const logoFor = useCallback(
+    (id: string) => icons[id] ?? byID.get(id)?.logo ?? null,
+    [icons, byID],
+  );
+
+  const startIconEdit = useCallback(
+    (id: string) => {
+      setEditingName(null);
+      setEditingIcon(id);
+      setDraftIcon(icons[id] ?? '');
+      setIconError(null);
+    },
+    [icons],
+  );
+
+  /// Like renames, an empty box means "use the provider's logo again", so the entry is
+  /// deleted rather than stored blank.
+  const commitIcon = useCallback(
+    (id: string) => {
+      const next = draftIcon.trim();
+      if (next && !isWebAddress(next)) {
+        setIconError('Paste the full image address, starting with https:// or http://.');
+        return;
+      }
+      setIcons((current) => {
+        const copy = { ...current };
+        if (next) copy[id] = next;
+        else delete copy[id];
+        return copy;
+      });
+      markTouched(CHANNEL_ICONS_KEY);
+      setEditingIcon(null);
+      setIconError(null);
+    },
+    [draftIcon, markTouched],
   );
 
   /// An empty box means "use the provider's name again", which is why the override is
@@ -295,6 +353,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       // The app stores this sorted; match it so the two agree.
       if (touched.has(HIDDEN_KEY)) await saveList(db, HIDDEN_KEY, [...hidden].sort());
       if (touched.has(CHANNEL_NAMES_KEY)) await saveMap(db, CHANNEL_NAMES_KEY, names);
+      if (touched.has(CHANNEL_ICONS_KEY)) await saveMap(db, CHANNEL_ICONS_KEY, icons);
       setTouched(new Set());
       setSaveFailed(false);
       setMessage('Saved and verified in iCloud. Your Apple TV will pick it up on next launch.');
@@ -304,7 +363,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     } finally {
       setSaving(false);
     }
-  }, [db, favorites, groups, hidden, names, touched]);
+  }, [db, favorites, groups, hidden, names, icons, touched]);
 
   /// Shown in the favourites list and inside an expanded category. One row is edited
   /// at a time, so the draft lives in the component rather than per row.
@@ -333,6 +392,54 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
     ) : (
       <span className={`min-w-0 flex-1 truncate ${tone}`}>{displayName(id)}</span>
     );
+
+  /// Replaces the name while a logo is being edited, the same way renaming does.
+  const iconField = (id: string) => (
+    <span className="flex min-w-0 flex-1 flex-col gap-1">
+      <span className="flex min-w-0 items-center gap-2">
+        <input
+          autoFocus
+          value={draftIcon}
+          onChange={(event) => {
+            setDraftIcon(event.target.value);
+            setIconError(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') commitIcon(id);
+            if (event.key === 'Escape') setEditingIcon(null);
+          }}
+          placeholder={byID.get(id)?.logo ?? 'https://… image address'}
+          className="min-w-0 flex-1 rounded-lg border border-tide-500/60 bg-abyss-950 px-2 py-1 text-sm text-sand-100 outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => commitIcon(id)}
+          className="shrink-0 rounded-lg bg-sand-100 px-2 py-1 text-xs font-semibold text-abyss-950"
+        >
+          Set
+        </button>
+        {icons[id] ? (
+          <button
+            type="button"
+            onClick={() => {
+              setDraftIcon('');
+              setIcons((current) => {
+                const copy = { ...current };
+                delete copy[id];
+                return copy;
+              });
+              markTouched(CHANNEL_ICONS_KEY);
+              setEditingIcon(null);
+            }}
+            className="shrink-0 rounded-lg border border-abyss-700 px-2 py-1 text-xs font-semibold text-sand-500 transition hover:text-sand-100"
+          >
+            Use original
+          </button>
+        ) : null}
+      </span>
+      {iconError ? <span className="text-xs text-red-300">{iconError}</span> : null}
+    </span>
+  );
 
   return (
     <div className="space-y-8">
@@ -395,8 +502,11 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                   <span className="w-6 shrink-0 text-right text-sm tabular-nums text-sand-500">
                     {index + 1}
                   </span>
+                  <ChannelLogo key={logoFor(id) ?? id} src={logoFor(id)} name={displayName(id)} />
                   <span className="flex min-w-0 flex-1 items-center">
-                    {editingName === id ? (
+                    {editingIcon === id ? (
+                      iconField(id)
+                    ) : editingName === id ? (
                       nameField(id, '')
                     ) : (
                       <span className="min-w-0 flex-1">
@@ -412,6 +522,9 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                   <span className="flex shrink-0 items-center gap-1">
                     <IconButton label="Rename" onClick={() => startRename(id)}>
                       <Pencil size={15} weight="bold" />
+                    </IconButton>
+                    <IconButton label="Change logo" onClick={() => startIconEdit(id)}>
+                      <ImageIcon size={15} weight="bold" />
                     </IconButton>
                     <IconButton label="Move up" onClick={() => move(index, -1)} disabled={index === 0}>
                       <ArrowUp size={15} weight="bold" />
@@ -455,6 +568,7 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                     className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-abyss-700 bg-abyss-900 px-4 py-3 text-left transition hover:border-abyss-600"
                   >
                     <Plus size={15} weight="bold" className="shrink-0 text-sand-500" />
+                    <ChannelLogo key={logoFor(channel.id) ?? channel.id} src={logoFor(channel.id)} name={channel.name} />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-sand-100">
                         {channel.name}
@@ -500,7 +614,8 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
         </div>
         <p className="mb-3 text-sm text-sand-600">
           {visibleGroupCount} of {groups.length} showing in your guide. Open one to add its
-          channels to your favorites or rename them; the arrows set the order it appears in.
+          channels to your favorites, rename them or change their logos; the arrows set the
+          order it appears in.
         </p>
         <ol className="space-y-2">
           {groups.map((group, index) => {
@@ -562,10 +677,17 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                           key={channel.id}
                           className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-abyss-800"
                         >
-                          {nameField(
-                            channel.id,
-                            channelHidden ? 'text-sm text-sand-600 line-through' : 'text-sm text-sand-300',
-                          )}
+                          <ChannelLogo
+                            key={logoFor(channel.id) ?? channel.id}
+                            src={logoFor(channel.id)}
+                            name={displayName(channel.id)}
+                          />
+                          {editingIcon === channel.id
+                            ? iconField(channel.id)
+                            : nameField(
+                                channel.id,
+                                channelHidden ? 'text-sm text-sand-600 line-through' : 'text-sm text-sand-300',
+                              )}
                           <button
                             type="button"
                             aria-label="Rename"
@@ -573,6 +695,14 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
                             className="shrink-0 rounded-lg border border-abyss-700 p-1.5 text-sand-600 transition hover:text-sand-100"
                           >
                             <Pencil size={14} weight="bold" />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label="Change logo"
+                            onClick={() => startIconEdit(channel.id)}
+                            className="shrink-0 rounded-lg border border-abyss-700 p-1.5 text-sand-600 transition hover:text-sand-100"
+                          >
+                            <ImageIcon size={14} weight="bold" />
                           </button>
                           <button
                             type="button"
@@ -654,6 +784,52 @@ export function FavoritesEditor({ apiToken }: { apiToken: string }) {
       </>
       )}
     </div>
+  );
+}
+
+/// The app accepts any http or https image address; anything else would be ignored.
+function isWebAddress(text: string): boolean {
+  try {
+    const url = new URL(text);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/// A channel's logo as the guide will show it. Provider and guide logos live on many
+/// different hosts and are often plain http, which a secure page may refuse to load,
+/// so a failed image falls back to the channel's initials rather than a broken icon.
+/// Callers key this by its URL, so changing the logo resets the failed state.
+function ChannelLogo({ src, name }: { src: string | null; name: string }) {
+  const [failed, setFailed] = useState(false);
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+  if (!src || failed) {
+    return (
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md bg-abyss-800 text-[10px] font-semibold text-sand-600"
+      >
+        {initials || '—'}
+      </span>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- logos come from arbitrary provider hosts next/image cannot be configured for
+    <img
+      src={src}
+      alt=""
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+      className="h-8 w-12 shrink-0 rounded-md bg-abyss-800 object-contain p-0.5"
+    />
   );
 }
 

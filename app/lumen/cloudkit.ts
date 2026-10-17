@@ -13,6 +13,8 @@ export const GROUP_ORDER_KEY = 'lumen.groupOrder';
 export const HIDDEN_KEY = 'lumen.hiddenIDs';
 export const PROVIDER_GROUPS_KEY = 'lumen.providerGroups';
 export const CHANNEL_NAMES_KEY = 'lumen.channelNames';
+/** Channel id to a logo URL that replaces the provider's. Read by the app like renames. */
+export const CHANNEL_ICONS_KEY = 'lumen.channelIcons';
 
 type CloudKitRecord = {
   recordName: string;
