@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from '@phosphor-icons/react/ssr';
-import { appList, comingSoonApps, previewApps, releasedApps, type AppData } from './apps/app-data';
+import { appList, newestRelease, comingSoonApps, previewApps, releasedApps, type AppData } from './apps/app-data';
 import { SiteNav } from './site-chrome';
 import { WaveMark } from './wave-mark';
 import { AppStack } from './app-stack';
@@ -191,6 +191,24 @@ export default function Home() {
               </p>
             </Reveal>
           </div>
+
+          {(() => {
+            const fresh = newestRelease();
+            if (!fresh) return null;
+            const short = fresh.name.split(':')[0];
+            return (
+              <div className="mx-auto mt-10 flex max-w-6xl justify-center px-5 sm:px-8">
+                <Link
+                  href={fresh.detailHref ?? `/apps/${fresh.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 text-sm text-sand-400 transition-colors hover:border-white/20 hover:text-sand-100"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-tide-400" aria-hidden="true" />
+                  New this week: {short} {fresh.latestVersion}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            );
+          })()}
 
           <AppStack apps={stackApps} />
         </section>

@@ -20,6 +20,14 @@ export type AppData = {
   };
   /** Optional override for AppStack details link (defaults to /apps/{slug}). */
   detailHref?: string;
+  /** Latest App Store version and its release date (YYYY-MM-DD). Drives the New this week strip. */
+  latestVersion?: string;
+  latestReleaseDate?: string;
+  /** Optional "New in x.y" block on the app page. */
+  whatsNew?: {
+    title: string;
+    items: string[];
+  };
   screenshotPaths: string[];
   screenshotAlts?: string[];
   previewImageSrc?: string;
@@ -67,6 +75,8 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
     },
+    latestVersion: '4.1',
+    latestReleaseDate: '2026-10-07',
     screenshotPaths: [
       '/apps/steady/screenshot-1.webp',
       '/apps/steady/screenshot-2.webp',
@@ -155,46 +165,55 @@ export const appList: AppData[] = [
   },
   {
     slug: 'skylight',
-    name: 'Skylight',
+    name: 'Skylight: Weather & Radar',
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      `Skylight 4.5: no false low reading when pollen or fine-particle data is missing, the snow card shows up, grades and charts follow your units, and saved-city time zones are fixed. Conditions, radar, alerts, AQI, and guidance without the clutter.`,
+      'Skylight 5.0 puts your local forecaster’s own write-up next to your forecast. On iPhone Duo it opens as a two-page spread, shows a Cover Brief when folded, and stands up in Tabletop view. Free to download.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
-    iconAlt: 'Skylight app icon',
+    iconAlt: 'Skylight: Weather & Radar app icon',
     releaseStage: 'app-store',
     availability:
       'Available now on the App Store for iPhone, iPad, and Apple Watch. Requires iOS 17.0, iPadOS 17.0, or watchOS 10.0 or later.',
     statusLabel: 'Live on the App Store',
     priceLabel: `${SKYLIGHT_ULTRA} one-time unlock for Skylight Ultra`,
     unlockPrice: `Ultra ${SKYLIGHT_ULTRA} once`,
-    appStoreUrl: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
+    appStoreUrl: 'https://apps.apple.com/us/app/skylight-weather-radar/id6769922192',
     primaryLink: {
       label: 'Download on the App Store',
-      href: 'https://apps.apple.com/us/app/skylight-your-weather/id6769922192',
+      href: 'https://apps.apple.com/us/app/skylight-weather-radar/id6769922192',
+    },
+    latestVersion: '5.0',
+    latestReleaseDate: '2026-10-22',
+    whatsNew: {
+      title: 'New in 5.0',
+      items: [
+        'Discussion: read your local forecaster’s own write-up right next to your forecast (US locations).',
+        'On iPhone Duo and iPad, Skylight opens as a two-page spread.',
+        'Folded, the Duo shows a Cover Brief. Half open, it stands up in Tabletop view.',
+        'Next Hour is more reliable, and a number of layout issues are fixed.',
+      ],
     },
     screenshotPaths: [
-      '/apps/skylight/screenshot-1.webp',
-      '/apps/skylight/screenshot-tides.webp',
-      '/apps/skylight/screenshot-detail.webp',
-      '/apps/skylight/screenshot-3.webp',
-      '/apps/skylight/screenshot-4.webp',
+      '/apps/skylight/v5-home.webp',
+      '/apps/skylight/v5-radar.webp',
+      '/apps/skylight/v5-outlook.webp',
+      '/apps/skylight/v5-settings.webp',
     ],
     screenshotAlts: [
-      'Skylight Home — conditions on the Home scroll',
-      'Skylight Tides — high and low water for the nearest station',
-      'Skylight Detail — tap a figure for a 24-hour chart',
-      'Skylight Settings — severe weather, rain ahead, alert readiness',
-      'Skylight Outlook — the days ahead',
+      'Skylight: Weather & Radar Home — today’s conditions',
+      'Skylight: Weather & Radar Radar — precipitation over a live map',
+      'Skylight: Weather & Radar Outlook — the days ahead',
+      'Skylight: Weather & Radar Settings — alerts and preferences',
     ],
     highlights: [
       'No ads, no account required, and no tracking',
       'Radar, AQI, rain timing, golden hour, and smart outlook cards',
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
-      'Skylight 4.5 fixes pollen and fine-particle readings, the snow card, unit-aware grades and charts, saved-city time zones, and Ultra widget pins for saved cities',
+      'Skylight 5.0 adds the forecaster Discussion, a two-page spread on iPhone Duo and iPad, Cover Brief, and Tabletop view',
     ],
     featureSections: [
       {
@@ -598,6 +617,8 @@ export const appList: AppData[] = [
       href: 'https://apps.apple.com/us/app/jade-run/id6802475679',
     },
     detailHref: '/jaderun',
+    latestVersion: '1.2',
+    latestReleaseDate: '2026-09-26',
     screenshotPaths: [
       '/apps/jaderun/screenshot-1.webp',
       '/apps/jaderun/screenshot-2.webp',
@@ -668,4 +689,15 @@ export const comingSoonApps = appList.filter((app) => app.releaseStage === 'comi
 
 export function getAppBySlug(slug: string) {
   return appList.find((app) => app.slug === slug);
+}
+
+/** The most recently updated live app, if its release is within the last 14 days. */
+export function newestRelease(now: Date = new Date()): AppData | undefined {
+  const dated = appList
+    .filter((a) => a.releaseStage === 'app-store' && a.latestReleaseDate && a.latestVersion)
+    .sort((x, y) => (y.latestReleaseDate! > x.latestReleaseDate! ? 1 : -1));
+  const top = dated[0];
+  if (!top) return undefined;
+  const age = now.getTime() - new Date(`${top.latestReleaseDate}T00:00:00Z`).getTime();
+  return age <= 14 * 24 * 60 * 60 * 1000 ? top : undefined;
 }
