@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { GoogleAdsHead, unattendedAdsPath } from './unattended/google-ads-head';
+import { ldString, organizationLd } from './ai-facts';
 import './globals.css';
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans', display: 'swap' });
@@ -36,6 +37,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: ldString(organizationLd()) }}
+        />
         {ads.showTag ? <GoogleAdsHead conversion={ads.showConversion} /> : null}
         {/* Motion server-renders its `initial` state, so every reveal ships
             as opacity:0. With JS disabled or broken that would leave the

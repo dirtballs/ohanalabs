@@ -286,6 +286,9 @@ export default function Home() {
             </span>
           </p>
           <div className="flex flex-wrap gap-6">
+            <Link className="transition hover:text-sand-100" href="/about">
+              About &amp; contact
+            </Link>
             <a className="transition hover:text-sand-100" href="mailto:support@ohanalabs.app">
               Contact
             </a>

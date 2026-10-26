@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/jaderun`, lastModified: built, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/unattended`, lastModified: built, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/unattended/thanks`, lastModified: built, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/about`, lastModified: built, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/help`, lastModified: built, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/privacy`, lastModified: built, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${BASE}/terms`, lastModified: built, changeFrequency: 'yearly', priority: 0.4 },
