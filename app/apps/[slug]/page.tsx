@@ -8,6 +8,7 @@ import type { AppData } from '../app-data';
 import { SiteNav } from '../../site-chrome';
 import { AppVisual } from '../../app-visual';
 import { BackLink, SiteFooter } from '../../page-shell';
+import { ldString, softwareAppLd } from '../../ai-facts';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -48,6 +49,12 @@ export default async function AppDetailPage({ params }: PageProps) {
 
   return (
     <>
+      {softwareAppLd(app) ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: ldString(softwareAppLd(app)) }}
+        />
+      ) : null}
       <SiteNav />
 
       <main id="main">

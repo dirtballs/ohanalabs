@@ -10,6 +10,7 @@ const links = [
   { label: 'Apps', href: '/#apps' },
   { label: 'Jade Run', href: '/jaderun' },
   { label: 'Why Ohana', href: '/#ohana' },
+  { label: 'About', href: '/about' },
 ];
 
 export function SiteNav() {
