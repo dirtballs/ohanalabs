@@ -23,11 +23,11 @@ export type AppData = {
   /** Latest App Store version and its release date (YYYY-MM-DD). Drives the New this week strip. */
   latestVersion?: string;
   latestReleaseDate?: string;
-  /** Optional "New in x.y" block on the app page. */
+  /** Optional "New in x.y" blocks on the app page, newest first. */
   whatsNew?: {
     title: string;
     items: string[];
-  };
+  }[];
   screenshotPaths: string[];
   screenshotAlts?: string[];
   previewImageSrc?: string;
@@ -59,7 +59,7 @@ export const appList: AppData[] = [
     category: 'GLP-1 tracking',
     headline: 'Today, doses, weight, and the journey — one GLP-1 home.',
     shortDescription:
-      'Steady 4.1: no ads on any plan, ten free AI meal scans a month, and titration plans for every major GLP-1. See what’s next for your shot, log the dose, watch the scale, and keep the story of your weeks in one place.',
+      'Steady 5.0: every number tells the truth. Lose a pound and it says you lost a pound. Charts plot in kilograms if that’s what you track. Autopilot follows the dose you’re actually on, and stepping up always asks first, one step at a time.',
     longDescription:
       'Steady helps people using semaglutide, tirzepatide, retatrutide, and compounded GLP-1 medications stay organized with reminders, trends, exports, and day-to-day health context.',
     iconSrc: '/apps/steady-icon.png',
@@ -75,8 +75,19 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/steady-glp-1-tracker/id6761083351',
     },
-    latestVersion: '4.1',
-    latestReleaseDate: '2026-10-07',
+    latestVersion: '5.0',
+    latestReleaseDate: '2026-10-26',
+    whatsNew: [
+      {
+        title: 'New in 5.0',
+        items: [
+          'Your weight trend reads the right way round. Lose a pound and Steady says you lost a pound.',
+          'Track in kilograms? Every chart, including Progress and Home, now plots in kilograms.',
+          'Autopilot shows the step your recorded dose puts you on. Stepping up asks first and moves one step at a time.',
+          'Today scales with your text size, up to the largest accessibility setting.',
+        ],
+      },
+    ],
     screenshotPaths: [
       '/apps/steady/screenshot-1.webp',
       '/apps/steady/screenshot-2.webp',
@@ -94,7 +105,7 @@ export const appList: AppData[] = [
       'SteadyShot Live Activity on Dynamic Island and Lock Screen',
       'Multi-therapy roles (Primary / Ramping / Weaning) plus taper plans',
       'Provider-ready PDF export + Apple Health sync',
-      'No ads on any plan, and ten free AI meal scans a month (Steady 4.1).',
+      'No ads on any plan, and ten free AI meal scans a month (Steady 5.0).',
       'Titration plans for Ozempic, Wegovy, Mounjaro, Zepbound, Rybelsus, Wegovy Pill, compounded semaglutide and tirzepatide, and retatrutide.',
     ],
     featureSections: [
@@ -169,7 +180,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'Skylight 5.0 puts your local forecaster’s own write-up next to your forecast. On iPhone Duo it opens as a two-page spread, shows a Cover Brief when folded, and stands up in Tabletop view. Free to download.',
+      'Skylight 5.0 puts your local forecaster’s own write-up next to your forecast. On iPhone Duo it opens as a two-page spread, shows a Cover Brief when folded, and stands up in Tabletop view. New in 5.1: your calendar on the Home screen, with the forecast for when each event actually happens. Soccer practice at 4, and whether it’ll be raining. Your calendar never leaves your phone. Free to download.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -185,17 +196,26 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/skylight-weather-radar/id6769922192',
     },
-    latestVersion: '5.0',
-    latestReleaseDate: '2026-10-22',
-    whatsNew: {
-      title: 'New in 5.0',
-      items: [
-        'Discussion: read your local forecaster’s own write-up right next to your forecast (US locations).',
-        'On iPhone Duo and iPad, Skylight opens as a two-page spread.',
-        'Folded, the Duo shows a Cover Brief. Half open, it stands up in Tabletop view.',
-        'Next Hour is more reliable, and a number of layout issues are fixed.',
-      ],
-    },
+    latestVersion: '5.1',
+    latestReleaseDate: '2026-10-26',
+    whatsNew: [
+      {
+        title: 'New in 5.1',
+        items: [
+          'Your calendar on the Home screen, with the forecast for when each event actually happens. Soccer practice at 4, and whether it’ll be raining.',
+          'Your calendar never leaves your phone. No event title or time is ever sent anywhere.',
+        ],
+      },
+      {
+        title: 'New in 5.0',
+        items: [
+          'Discussion: read your local forecaster’s own write-up right next to your forecast (US locations).',
+          'On iPhone Duo and iPad, Skylight opens as a two-page spread.',
+          'Folded, the Duo shows a Cover Brief. Half open, it stands up in Tabletop view.',
+          'Next Hour is more reliable, and a number of layout issues are fixed.',
+        ],
+      },
+    ],
     screenshotPaths: [
       '/apps/skylight/v5-home.webp',
       '/apps/skylight/v5-radar.webp',
@@ -691,13 +711,16 @@ export function getAppBySlug(slug: string) {
   return appList.find((app) => app.slug === slug);
 }
 
+/** Live apps whose latest release is within the last 14 days, newest first. */
+export function recentReleases(now: Date = new Date()): AppData[] {
+  const maxAge = 14 * 24 * 60 * 60 * 1000;
+  return appList
+    .filter((a) => a.releaseStage === 'app-store' && a.latestReleaseDate && a.latestVersion)
+    .filter((a) => now.getTime() - new Date(`${a.latestReleaseDate}T00:00:00Z`).getTime() <= maxAge)
+    .sort((x, y) => y.latestReleaseDate!.localeCompare(x.latestReleaseDate!));
+}
+
 /** The most recently updated live app, if its release is within the last 14 days. */
 export function newestRelease(now: Date = new Date()): AppData | undefined {
-  const dated = appList
-    .filter((a) => a.releaseStage === 'app-store' && a.latestReleaseDate && a.latestVersion)
-    .sort((x, y) => (y.latestReleaseDate! > x.latestReleaseDate! ? 1 : -1));
-  const top = dated[0];
-  if (!top) return undefined;
-  const age = now.getTime() - new Date(`${top.latestReleaseDate}T00:00:00Z`).getTime();
-  return age <= 14 * 24 * 60 * 60 * 1000 ? top : undefined;
+  return recentReleases(now)[0];
 }
