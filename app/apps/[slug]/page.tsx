@@ -125,12 +125,12 @@ export default async function AppDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {app.whatsNew ? (
-          <section className="border-b border-white/5">
+        {app.whatsNew?.map((block) => (
+          <section key={block.title} className="border-b border-white/5">
             <div className="mx-auto grid max-w-6xl gap-6 px-5 py-16 sm:px-8 lg:grid-cols-[0.35fr_1fr] lg:gap-16 lg:py-20">
-              <h2 className="text-2xl font-semibold tracking-heading text-sand-100">{app.whatsNew.title}</h2>
+              <h2 className="text-2xl font-semibold tracking-heading text-sand-100">{block.title}</h2>
               <ul className="grid gap-4 sm:grid-cols-2">
-                {app.whatsNew.items.map((item) => (
+                {block.items.map((item) => (
                   <li key={item} className="leading-7 text-sand-300">
                     {item}
                   </li>
@@ -138,7 +138,7 @@ export default async function AppDetailPage({ params }: PageProps) {
               </ul>
             </div>
           </section>
-        ) : null}
+        ))}
 
         {/* Highlights. Numbered editorial list, no card per row. */}
         <section className="border-b border-white/5">
