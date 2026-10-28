@@ -30,6 +30,9 @@ export type AppData = {
   }[];
   screenshotPaths: string[];
   screenshotAlts?: string[];
+  /** Optional shot that leads the app page gallery only. Cards and the
+   *  hero keep screenshotPaths[0] as their lead. */
+  galleryLeadShot?: { src: string; alt: string };
   previewImageSrc?: string;
   previewImageAlt?: string;
   highlights: string[];
@@ -216,6 +219,10 @@ export const appList: AppData[] = [
         ],
       },
     ],
+    galleryLeadShot: {
+      src: '/apps/skylight/v5-discussion.webp',
+      alt: "Skylight's Discussion screen showing the local forecaster's own write-up for Seattle",
+    },
     screenshotPaths: [
       '/apps/skylight/v5-home.webp',
       '/apps/skylight/v5-radar.webp',
