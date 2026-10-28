@@ -9,10 +9,13 @@ import { ShotThumb, type Shot } from './shot-lightbox';
  *  there is no third fallback branch to go stale. Shots open larger. */
 export function AppVisual({ app }: { app: AppData }) {
   if (app.screenshotPaths.length > 0) {
-    const shots: Shot[] = app.screenshotPaths.map((src, i) => ({
-      src,
-      alt: app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`,
-    }));
+    const shots: Shot[] = [
+      ...(app.galleryLeadShot ? [app.galleryLeadShot] : []),
+      ...app.screenshotPaths.map((src, i) => ({
+        src,
+        alt: app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`,
+      })),
+    ];
 
     return (
       <div className="grid grid-cols-3 gap-3 sm:gap-5">
