@@ -300,6 +300,10 @@ export default function Home() {
             </Link>
           </div>
         </div>
+        <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <a href="https://fazier.com" target="_blank"><img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=dark" width={120} alt="Fazier badge" /></a>
+        </div>
       </footer>
     </>
   );
