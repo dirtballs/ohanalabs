@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+node_modules
+.next
+.vercel
+.env*
+*.tsbuildinfo
+screenshots
+README.md
+LICENSE
+.DS_Store

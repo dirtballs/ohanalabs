@@ -1,6 +1,23 @@
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
+  /* Self-hosted on the NAS behind a Cloudflare Tunnel since 2026-11-10.
+     'standalone' emits .next/standalone with a minimal server.js and only the
+     node_modules it actually needs, which is what the Docker image runs. */
+  output: 'standalone',
+  /* Vercel did the apex -> www 308 at the platform level. Self-hosted there is
+     no platform, and the AASA note below depends on www being canonical, so the
+     redirect has to live here. */
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'ohanalabs.app' }],
+        destination: 'https://www.ohanalabs.app/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
