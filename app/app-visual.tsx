@@ -10,7 +10,7 @@ import { ShotThumb, type Shot } from './shot-lightbox';
 export function AppVisual({ app }: { app: AppData }) {
   if (app.screenshotPaths.length > 0) {
     const shots: Shot[] = [
-      ...(app.galleryLeadShot ? [app.galleryLeadShot] : []),
+      ...(app.galleryLeadShots ?? []),
       ...app.screenshotPaths.map((src, i) => ({
         src,
         alt: app.screenshotAlts?.[i] ?? `${app.name} screen ${i + 1}`,
