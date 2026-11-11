@@ -146,3 +146,6 @@ vite.config.ts.timestamp-*
 .DS_Store
 .vercel
 .env*
+
+# Local deploy target (host and paths)
+scripts/deploy-nas.env
