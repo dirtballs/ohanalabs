@@ -1,12 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from '@phosphor-icons/react/ssr';
-import { appList, recentReleases, comingSoonApps, previewApps, releasedApps, type AppData } from './apps/app-data';
+import { appList, comingSoonApps, previewApps, releasedApps, type AppData } from './apps/app-data';
 import { SiteNav } from './site-chrome';
 import { WaveMark } from './wave-mark';
 import { AppStack } from './app-stack';
 import { HeroFocus, type HeroApp } from './hero-focus';
 import { Reveal, RevealGroup, RevealItem } from './reveal';
+import { getLatestReleases, recentFromLatest } from './store-facts';
+
+/* The Latest update lines and the New this week strip read the App Store
+   lookup, cached for six hours, so the page re-renders on that cadence. */
+export const revalidate = 21600;
 
 const CUSTOM_APP_MAIL = 'mailto:support@ohanalabs.app?subject=Custom%20iOS%20macOS%20app';
 
@@ -43,7 +48,7 @@ function toHeroApp(app: AppData): HeroApp {
   };
 }
 
-export default function Home() {
+export default async function Home() {
   const steady = appList.find((a) => a.slug === 'steady')!;
   const jade = appList.find((a) => a.slug === 'jade-run')!;
   /* Launch-week stack: Steady → Jade → rest (Jade at #2). */
@@ -52,6 +57,7 @@ export default function Home() {
     jade,
     ...appList.filter((a) => a.slug !== 'steady' && a.slug !== 'jade-run'),
   ];
+  const latest = await getLatestReleases(appList);
 
   return (
     <>
@@ -193,27 +199,31 @@ export default function Home() {
           </div>
 
           {(() => {
-            const fresh = recentReleases();
+            const fresh = recentFromLatest(latest);
             if (fresh.length === 0) return null;
             return (
               <div className="mx-auto mt-10 flex max-w-6xl flex-wrap items-center justify-center gap-2 px-5 sm:px-8">
                 <span className="text-sm text-sand-400">New this week:</span>
-                {fresh.map((app) => (
+                {fresh.map((rel) => {
+                  const app = appList.find((a) => a.slug === rel.slug)!;
+                  return (
                   <Link
                     key={app.slug}
                     href={app.detailHref ?? `/apps/${app.slug}`}
                     className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-1.5 text-sm text-sand-400 transition-colors hover:border-white/20 hover:text-sand-100"
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-tide-400" aria-hidden="true" />
-                    {app.name.split(':')[0]} {app.latestVersion}
+                    {app.name.split(':')[0]} {rel.version}
+                    {rel.headline ? `: ${rel.headline}` : null}
                     <span aria-hidden="true">→</span>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             );
           })()}
 
-          <AppStack apps={stackApps} />
+          <AppStack apps={stackApps} latest={latest} />
         </section>
 
         {/* 3. WHY OHANA. Full-bleed ambient field, type at poster scale. */}
