@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { AppStoreLogo, ArrowRight } from '@phosphor-icons/react';
 import type { AppData } from './apps/app-data';
+import { formatReleaseDate, type LatestRelease } from './store-facts';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -31,7 +32,14 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  * sections; the two never share a component tree because they fight over
  * the same frames.
  */
-export function AppStack({ apps }: { apps: AppData[] }) {
+export function AppStack({
+  apps,
+  latest = {},
+}: {
+  apps: AppData[];
+  /** Live App Store version per slug, from the server. Live apps only. */
+  latest?: Record<string, LatestRelease>;
+}) {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -114,6 +122,12 @@ export function AppStack({ apps }: { apps: AppData[] }) {
 
                 {app.releaseStage === 'app-store' && app.unlockPrice ? (
                   <p className="mt-3 text-xs font-medium tracking-wide text-sand-600">{app.unlockPrice}</p>
+                ) : null}
+
+                {app.releaseStage === 'app-store' && latest[app.slug] ? (
+                  <p className="mt-1.5 text-xs text-sand-600">
+                    Latest update: v{latest[app.slug].version} · {formatReleaseDate(latest[app.slug].releaseDate)}
+                  </p>
                 ) : null}
 
                 <div className="mt-9 flex flex-col gap-3 sm:flex-row">

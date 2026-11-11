@@ -20,9 +20,14 @@ export type AppData = {
   };
   /** Optional override for AppStack details link (defaults to /apps/{slug}). */
   detailHref?: string;
-  /** Latest App Store version and its release date (YYYY-MM-DD). Drives the New this week strip. */
+  /** Latest App Store version and its release date (YYYY-MM-DD). The live
+   *  App Store lookup (app/store-facts.ts) wins when it answers; these are
+   *  the fallback and feed the JSON-LD, llms.txt and ai.json. */
   latestVersion?: string;
   latestReleaseDate?: string;
+  /** Short release title for latestVersion, shown in the New this week strip
+   *  only while the App Store still reports that same version. */
+  latestHeadline?: string;
   /** Optional "New in x.y" blocks on the app page, newest first. */
   whatsNew?: {
     title: string;
@@ -30,9 +35,9 @@ export type AppData = {
   }[];
   screenshotPaths: string[];
   screenshotAlts?: string[];
-  /** Optional shot that leads the app page gallery only. Cards and the
-   *  hero keep screenshotPaths[0] as their lead. */
-  galleryLeadShot?: { src: string; alt: string };
+  /** Optional shots that lead the app page gallery only, in order. Cards
+   *  and the hero keep screenshotPaths[0] as their lead. */
+  galleryLeadShots?: { src: string; alt: string }[];
   previewImageSrc?: string;
   previewImageAlt?: string;
   highlights: string[];
@@ -185,7 +190,7 @@ export const appList: AppData[] = [
     category: 'Weather',
     headline: 'A focused weather app for people who want clarity instead of clutter.',
     shortDescription:
-      'Skylight 5.0 puts your local forecaster’s own write-up next to your forecast. On iPhone Duo it opens as a two-page spread, shows a Cover Brief when folded, and stands up in Tabletop view. New in 5.1: your calendar on the Home screen, with the forecast for when each event actually happens. Soccer practice at 4, and whether it’ll be raining. Your calendar never leaves your phone. Free to download.',
+      'Skylight 5.0 puts your local forecaster’s own write-up next to your forecast. On iPhone Duo it opens as a two-page spread, shows a Cover Brief when folded, and stands up in Tabletop view. New in 5.3: rain alerts that tell you when rain starts and how long it’ll last, right on your Lock Screen. Free to download.',
     longDescription:
       'Skylight is a privacy-first weather app built for people who want to understand what is happening outside without ads, noise, account walls, or subscription games.',
     iconSrc: '/apps/skylight-icon.png',
@@ -201,9 +206,28 @@ export const appList: AppData[] = [
       label: 'Download on the App Store',
       href: 'https://apps.apple.com/us/app/skylight-weather-radar/id6769922192',
     },
-    latestVersion: '5.1',
-    latestReleaseDate: '2026-10-26',
+    latestVersion: '5.3',
+    latestReleaseDate: '2026-11-10',
+    latestHeadline: 'Rain alerts, rebuilt',
     whatsNew: [
+      {
+        title: 'New in 5.3',
+        items: [
+          'The next hour of rain shows as a bar chart on your Lock Screen and in the Dynamic Island.',
+          'Alerts say how long rain will last: light rain in about 15 minutes, lasting about 30.',
+          'Ultra: a weather icon next to every calendar event, plus a This week view.',
+          'A new Lock Screen widget counts down to rain.',
+        ],
+      },
+      {
+        title: 'New in 5.2',
+        items: [
+          'Your calendar has a screen of its own.',
+          'Settings is shorter and easier to find your way around.',
+          'Quiet hours for rain alerts. Official weather warnings still get through.',
+          'Radar layers and legends are easier to read.',
+        ],
+      },
       {
         title: 'New in 5.1',
         items: [
@@ -221,21 +245,34 @@ export const appList: AppData[] = [
         ],
       },
     ],
-    galleryLeadShot: {
-      src: '/apps/skylight/v5-discussion.webp',
-      alt: "Skylight's Discussion screen showing the local forecaster's own write-up for Seattle",
-    },
+    galleryLeadShots: [
+      {
+        src: '/apps/skylight/v5-discussion.webp',
+        alt: "Skylight's Discussion screen showing the local forecaster's own write-up for Seattle",
+      },
+      {
+        src: '/apps/skylight/v53-calendar.webp',
+        alt: 'Skylight Calendar screen: Apple Calendar connected, a switch for each calendar Skylight reads, and the next appointment for Leave by',
+      },
+      {
+        src: '/apps/skylight/v53-rain-alerts.webp',
+        alt: 'Skylight Alert inbox with rain alerts, including light rain starting around 4:20 PM and lasting about 40 minutes',
+      },
+      {
+        src: '/apps/skylight/v53-settings.webp',
+        alt: 'Skylight Settings: Skylight Ultra, alert readiness, alert location, and weather alert switches with a 15, 30 or 60 minute heads-up for rain',
+      },
+    ],
+    /* v5-settings.webp stays on disk; the 5.2 Settings shot replaced it in the gallery. */
     screenshotPaths: [
       '/apps/skylight/v5-home.webp',
       '/apps/skylight/v5-radar.webp',
       '/apps/skylight/v5-outlook.webp',
-      '/apps/skylight/v5-settings.webp',
     ],
     screenshotAlts: [
       'Skylight: Weather & Radar Home — today’s conditions',
       'Skylight: Weather & Radar Radar — precipitation over a live map',
       'Skylight: Weather & Radar Outlook — the days ahead',
-      'Skylight: Weather & Radar Settings — alerts and preferences',
     ],
     highlights: [
       'No ads, no account required, and no tracking',
@@ -243,6 +280,7 @@ export const appList: AppData[] = [
       'Widgets, saved places, and weather alerts',
       'One-time Ultra purchase instead of a recurring subscription',
       'Skylight 5.0 adds the forecaster Discussion, a two-page spread on iPhone Duo and iPad, Cover Brief, and Tabletop view',
+      'Skylight 5.3 puts the next hour of rain on your Lock Screen and in the Dynamic Island, and alerts say how long it will last',
     ],
     featureSections: [
       {
